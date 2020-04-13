@@ -1,6 +1,6 @@
 # Programiranje-u-Javi-1
 
-Projekt potreban za kolegij Programiranje u Javi 1
+Projekt potreban za kolegij _Programiranje u Javi 1_
 
 ## Opis projekta
 
