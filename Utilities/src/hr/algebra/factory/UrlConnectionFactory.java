@@ -22,6 +22,7 @@ public class UrlConnectionFactory {
         con.setReadTimeout(timeout);
         con.setConnectTimeout(timeout);
         con.setRequestMethod(requestMethod);
+        con.addRequestProperty("User-Agent","Mozilla/5.0");
         return con;
     }
 }

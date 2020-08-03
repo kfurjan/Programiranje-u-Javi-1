@@ -66,25 +66,30 @@ public class FileUtils {
             Files.createDirectories(Paths.get(dir));
         }
     }
+    
+    public static boolean filenameHasExtension(String filename, int length) {
+        return filename.contains(".") && filename.substring(filename.lastIndexOf(".")+1).length() == length;
+    }
 
-    public static File saveTextInFile(String text, File file) throws IOException {
-        if (file == null) {
+    public static Optional<File> saveTextInFile(String text, Optional<File> optFile) throws IOException {
+        if (!optFile.isPresent()) {
             JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
             chooser.setFileFilter(new FileNameExtensionFilter(TEXT_DOCUMENTS, TXT));
             chooser.setDialogTitle(SAVE);
             chooser.setApproveButtonText(SAVE);
             chooser.setApproveButtonToolTipText(SAVE);
             if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-                file = chooser.getSelectedFile();
+                File file = chooser.getSelectedFile();
                 if (!file.toString().endsWith(TXT)) {
                     file = new File(file.toString().concat(".").concat(TXT));
                 }
                 Files.write(file.toPath(), text.getBytes());
+                optFile = Optional.of(file);
             }
         } else {
-            Files.write(file.toPath(), text.getBytes());
+            Files.write(optFile.get().toPath(), text.getBytes());
         }
-        return file;
+        return optFile;
     }
 
     public static Optional<String> loadTextFromFile() throws IOException {
