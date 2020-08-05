@@ -15,3 +15,5 @@
 hs_err_pid*
 /Utilities/build/
 /SwingProject/build/
+/Utilities/dist/
+/SwingProject/dist/
