@@ -1,6 +1,8 @@
 package hr.algebra.panel;
 
 import hr.algebra.frame.MainFrame;
+import hr.algebra.repository.Repository;
+import hr.algebra.repository.RepositoryFactory;
 import hr.algebra.utils.MessageUtils;
 import java.util.Arrays;
 import java.util.List;
@@ -18,6 +20,8 @@ public class LoginPanel extends javax.swing.JPanel {
 
     private static final String CANNOT_INITIATE_THE_FORM = "Cannot initiate the form";
     private static final String UNRECOVERABLE_ERROR = "Unrecoverable error";
+
+    Repository repository;
 
     private List<JTextComponent> validationFields;
     private List<JLabel> errorLabels;
@@ -112,21 +116,13 @@ public class LoginPanel extends javax.swing.JPanel {
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
 
         if (formValid()) {
+            String username = txtUsername.getText().trim();
+            String password = txtPassword.getText().trim();
+
             MainFrame topFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
             topFrame.getTpContent().add("New login", new LoginPanel());
         }
     }//GEN-LAST:event_btnLoginActionPerformed
-
-    private void init() {
-
-        try {
-            initValidation();
-        } catch (Exception ex) {
-            Logger.getLogger(LoginPanel.class.getName()).log(Level.SEVERE, null, ex);
-            MessageUtils.showErrorMessage(UNRECOVERABLE_ERROR, CANNOT_INITIATE_THE_FORM);
-            System.exit(1);
-        }
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLogin;
@@ -138,13 +134,30 @@ public class LoginPanel extends javax.swing.JPanel {
     private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 
+    private void init() {
+
+        try {
+            initValidation();
+            initRepository();
+        } catch (Exception ex) {
+            Logger.getLogger(LoginPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage(UNRECOVERABLE_ERROR, CANNOT_INITIATE_THE_FORM);
+            System.exit(1);
+        }
+    }
+
     private void initValidation() {
 
         errorLabels = Arrays.asList(lblPasswordError, lblUsernameError);
         validationFields = Arrays.asList(txtUsername, txtPassword);
     }
 
+    private void initRepository() throws Exception {
+        repository = RepositoryFactory.getRepository();
+    }
+
     private boolean formValid() {
+
         boolean formOk = true;
 
         for (int i = 0; i < validationFields.size(); i++) {
@@ -161,7 +174,6 @@ public class LoginPanel extends javax.swing.JPanel {
                             .trim()
                             .isEmpty() ? "X" : "");
         }
-
         return formOk;
     }
 }
