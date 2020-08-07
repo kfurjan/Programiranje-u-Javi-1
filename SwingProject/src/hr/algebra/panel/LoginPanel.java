@@ -1,11 +1,13 @@
 package hr.algebra.panel;
 
 import hr.algebra.frame.MainFrame;
+import hr.algebra.model.ApplicationUser;
 import hr.algebra.repository.Repository;
 import hr.algebra.repository.RepositoryFactory;
 import hr.algebra.utils.MessageUtils;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
@@ -18,13 +20,16 @@ import javax.swing.text.JTextComponent;
  */
 public class LoginPanel extends javax.swing.JPanel {
 
-    private static final String CANNOT_INITIATE_THE_FORM = "Cannot initiate the form";
-    private static final String UNRECOVERABLE_ERROR = "Unrecoverable error";
-
     Repository repository;
 
     private List<JTextComponent> validationFields;
     private List<JLabel> errorLabels;
+
+    private static final String ADMIN_PANEL = "Admin panel";
+
+    private static final String CANNOT_INITIATE_THE_FORM = "Cannot initiate the form";
+    private static final String LOGIN_ERROR = "Error while loging in";
+    private static final String UNRECOVERABLE_ERROR = "Unrecoverable error";
 
     /**
      * Creates new form LoginPanel
@@ -115,12 +120,32 @@ public class LoginPanel extends javax.swing.JPanel {
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
 
-        if (formValid()) {
-            String username = txtUsername.getText().trim();
-            String password = txtPassword.getText().trim();
+        try {
+            if (formValid()) {
+                String username = txtUsername.getText().trim();
+                String password = txtPassword.getText().trim();
+                MainFrame topFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
 
-            MainFrame topFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
-            topFrame.getTpContent().add("New login", new LoginPanel());
+                Optional<ApplicationUser> user = repository.GetApplicationUser(username, password);
+                if (user.isPresent()) {
+                    switch (user.get().getUserType()) {
+                        case Administrator:
+                            topFrame.getTpContent().remove(this);
+                            topFrame.getTpContent().add(ADMIN_PANEL, new AdminPanel());
+                            break;
+                        case User:
+                            topFrame.getTpContent().remove(this);
+                            topFrame.getTpContent().add("User panel", new LoginPanel());
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(LoginPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage(UNRECOVERABLE_ERROR, LOGIN_ERROR);
+            System.exit(1);
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 

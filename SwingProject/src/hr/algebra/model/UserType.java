@@ -8,21 +8,21 @@ import java.util.Optional;
  */
 public enum UserType {
 
-    Administrator("Administrator"),
-    User("User");
+    Administrator(1),
+    User(2);
 
-    private final String userType;
+    private final int userTypeId;
 
-    private UserType(String userType) {
-        this.userType = userType;
+    private UserType(int userTypeId) {
+        this.userTypeId = userTypeId;
     }
 
-    private static Optional<UserType> from(String name) {
+    public static UserType fromId(int id) {
         for (UserType value : values()) {
-            if (value.userType.equals(name)) {
-                return Optional.of(value);
+            if (value.userTypeId == id) {
+                return value;
             }
         }
-        return Optional.empty();
+        return null;
     }
 }

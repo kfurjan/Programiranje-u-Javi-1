@@ -94,3 +94,20 @@ CREATE TABLE MovieGenre
 	GenreID 		int	CONSTRAINT FK_Genre_Movie FOREIGN KEY REFERENCES Genre(IDGenre) NOT NULL
 )
 GO
+
+CREATE PROCEDURE GetApplicationUser
+	@Username nvarchar(50),
+	@Password nvarchar(50)
+AS
+BEGIN
+	SELECT 
+		Username,
+		Password,
+		ApplicationUserTypeID
+	FROM 
+		ApplicationUser
+	WHERE 
+		Username = @Username AND
+		Password = @Password
+END
+GO

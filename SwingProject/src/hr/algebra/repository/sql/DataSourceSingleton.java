@@ -11,8 +11,8 @@ public class DataSourceSingleton {
 
     private static final String SERVER_NAME = "localhost";
     private static final String DATABASE_NAME = "PUJ1-Database";
-    private static final String USER = "sa";
-    private static final String PASSWORD = "SQL";
+    private static final String USER = "sql-login";
+    private static final String PASSWORD = "sqlServer01.";
 
     private static DataSource instance;
 
