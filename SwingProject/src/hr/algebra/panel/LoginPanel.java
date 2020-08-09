@@ -2,6 +2,7 @@ package hr.algebra.panel;
 
 import hr.algebra.frame.MainFrame;
 import hr.algebra.model.ApplicationUser;
+import hr.algebra.parser.rss.MovieParser;
 import hr.algebra.repository.Repository;
 import hr.algebra.repository.RepositoryFactory;
 import hr.algebra.utils.MessageUtils;
@@ -130,6 +131,9 @@ public class LoginPanel extends javax.swing.JPanel {
                 if (user.isPresent()) {
                     switch (user.get().getUserType()) {
                         case Administrator:
+                            // testing purposes
+                            MovieParser.parse().forEach(System.out::println);
+                            
                             topFrame.getTpContent().remove(this);
                             topFrame.getTpContent().add(ADMIN_PANEL, new AdminPanel());
                             break;
