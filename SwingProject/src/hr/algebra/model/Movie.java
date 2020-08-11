@@ -18,16 +18,16 @@ public class Movie {
     private String originalName;
     private String directors;
     private String actors;
-    private int length;
+    private String length;
     private String genre;
     private String picturePath;
     private String link;
-    private LocalDateTime startDate;
+    private String startDate;
 
     public Movie() {
     }
 
-    public Movie(String title, LocalDateTime publishedDate, String description, String originalName, String directors, String actors, int length, String genre, String picturePath, String link, LocalDateTime startDate) {
+    public Movie(String title, LocalDateTime publishedDate, String description, String originalName, String directors, String actors, String length, String genre, String picturePath, String link, String startDate) {
         this.title = title;
         this.publishedDate = publishedDate;
         this.description = description;
@@ -89,11 +89,11 @@ public class Movie {
         this.actors = actors;
     }
 
-    public int getLength() {
+    public String getLength() {
         return length;
     }
 
-    public void setLength(int length) {
+    public void setLength(String length) {
         this.length = length;
     }
 
@@ -121,11 +121,11 @@ public class Movie {
         this.link = link;
     }
 
-    public LocalDateTime getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
