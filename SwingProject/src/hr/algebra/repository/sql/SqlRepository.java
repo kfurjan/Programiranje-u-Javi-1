@@ -20,6 +20,7 @@ public class SqlRepository implements Repository {
     private static final String USER_TYPE_ID = "ApplicationUserTypeID";
 
     private static final String GET_APPLICATON_USER = "{ CALL GetApplicationUser (?,?) }";
+    private static final String CREATE_NEW_USER = "{ CALL CreateNewUser (?,?) }";
 
     @Override
     public Optional<ApplicationUser> GetApplicationUser(String username, String password) throws Exception {
@@ -42,5 +43,19 @@ public class SqlRepository implements Repository {
         }
 
         return Optional.empty();
+    }
+
+    @Override
+    public void CreateNewUser(String username, String password) throws Exception {
+
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(CREATE_NEW_USER)) {
+
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+
+            stmt.executeUpdate();
+        }
     }
 }

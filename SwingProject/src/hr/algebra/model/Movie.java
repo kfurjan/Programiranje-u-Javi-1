@@ -7,7 +7,6 @@ import java.time.format.DateTimeFormatter;
  *
  * @author Kevin Furjan
  */
-// TODO: use directors and actors as list of seperate entities
 public class Movie {
 
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;

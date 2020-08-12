@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface Repository {
 
     public Optional<ApplicationUser> GetApplicationUser(String username, String password) throws Exception;
+    public void CreateNewUser(String username, String password) throws Exception;
 }

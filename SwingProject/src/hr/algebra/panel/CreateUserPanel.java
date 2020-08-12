@@ -1,14 +1,11 @@
 package hr.algebra.panel;
 
 import hr.algebra.frame.MainFrame;
-import hr.algebra.model.ApplicationUser;
-import hr.algebra.parser.rss.MovieParser;
 import hr.algebra.repository.Repository;
 import hr.algebra.repository.RepositoryFactory;
 import hr.algebra.utils.MessageUtils;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
@@ -19,25 +16,25 @@ import javax.swing.text.JTextComponent;
  *
  * @author Kevin Furjan
  */
-public class LoginPanel extends javax.swing.JPanel {
+public class CreateUserPanel extends javax.swing.JPanel {
 
     Repository repository;
 
     private List<JTextComponent> validationFields;
     private List<JLabel> errorLabels;
 
-    private static final String ADMIN_PANEL = "Admin panel";
-    private static final String CREATE_NEW_USER_PANEL = "Create new user";
+    private static final String USER_CREATED_TITLE = "User created";
+    private static final String NEW_USER_CREATED = "New user has been created";
 
     private static final String CANNOT_INITIATE_THE_FORM = "Cannot initiate the form";
-    private static final String LOGIN_ERROR = "Error while loging in";
+    private static final String NEW_USER_ERROR = "Error while creating new user";
     private static final String UNRECOVERABLE_ERROR = "Unrecoverable error";
 
     /**
      * Creates new form LoginPanel
      */
-    public LoginPanel() {
-        
+    public CreateUserPanel() {
+
         initComponents();
         init();
     }
@@ -56,10 +53,9 @@ public class LoginPanel extends javax.swing.JPanel {
         lblPassword = new javax.swing.JLabel();
         txtUsername = new javax.swing.JTextField();
         txtPassword = new javax.swing.JTextField();
-        btnLogin = new javax.swing.JButton();
+        btnCreateUser = new javax.swing.JButton();
         lblUsernameError = new javax.swing.JLabel();
         lblPasswordError = new javax.swing.JLabel();
-        btnCreateNewUser = new javax.swing.JButton();
 
         java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
         layout.columnWidths = new int[] {0, 80, 0, 80, 0, 80, 0, 80, 0, 80, 0};
@@ -96,10 +92,10 @@ public class LoginPanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 0.2;
         add(txtPassword, gridBagConstraints);
 
-        btnLogin.setText("Log in");
-        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+        btnCreateUser.setText("Create user");
+        btnCreateUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLoginActionPerformed(evt);
+                btnCreateUserActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -107,7 +103,7 @@ public class LoginPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 6;
         gridBagConstraints.gridwidth = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        add(btnLogin, gridBagConstraints);
+        add(btnCreateUser, gridBagConstraints);
 
         lblUsernameError.setForeground(new java.awt.Color(255, 0, 0));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -120,63 +116,29 @@ public class LoginPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 8;
         gridBagConstraints.gridy = 2;
         add(lblPasswordError, gridBagConstraints);
-
-        btnCreateNewUser.setText("Create new user");
-        btnCreateNewUser.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCreateNewUserActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 8;
-        gridBagConstraints.gridwidth = 5;
-        add(btnCreateNewUser, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+    private void btnCreateUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateUserActionPerformed
 
         try {
             if (formValid()) {
                 String username = txtUsername.getText().trim();
                 String password = txtPassword.getText().trim();
                 MainFrame topFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
-                
-                Optional<ApplicationUser> user = repository.GetApplicationUser(username, password);
-                if (user.isPresent()) {
-                    switch (user.get().getUserType()) {
-                        case Administrator:
-                            // testing purposes
-                            MovieParser.parse().forEach(System.out::println);
-                            
-                            topFrame.getTpContent().remove(this);
-                            topFrame.getTpContent().add(ADMIN_PANEL, new AdminPanel());
-                            break;
-                        case User:
-                            topFrame.getTpContent().remove(this);
-                            topFrame.getTpContent().add("User panel", new LoginPanel());
-                            break;
-                        default:
-                            break;
-                    }
-                }
+
+                repository.CreateNewUser(username, password);
+                MessageUtils.showInformationMessage(USER_CREATED_TITLE, NEW_USER_CREATED);
+                topFrame.getTpContent().remove(this);
             }
         } catch (Exception ex) {
-            Logger.getLogger(LoginPanel.class.getName()).log(Level.SEVERE, null, ex);
-            MessageUtils.showErrorMessage(UNRECOVERABLE_ERROR, LOGIN_ERROR);
+            Logger.getLogger(CreateUserPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage(UNRECOVERABLE_ERROR, NEW_USER_ERROR);
             System.exit(1);
         }
-    }//GEN-LAST:event_btnLoginActionPerformed
+    }//GEN-LAST:event_btnCreateUserActionPerformed
 
-    private void btnCreateNewUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateNewUserActionPerformed
-        
-        MainFrame topFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
-        topFrame.getTpContent().add(CREATE_NEW_USER_PANEL, new CreateUserPanel());
-    }//GEN-LAST:event_btnCreateNewUserActionPerformed
-   
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCreateNewUser;
-    private javax.swing.JButton btnLogin;
+    private javax.swing.JButton btnCreateUser;
     private javax.swing.JLabel lblPassword;
     private javax.swing.JLabel lblPasswordError;
     private javax.swing.JLabel lblUsername;
@@ -191,7 +153,7 @@ public class LoginPanel extends javax.swing.JPanel {
             initValidation();
             initRepository();
         } catch (Exception ex) {
-            Logger.getLogger(LoginPanel.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CreateUserPanel.class.getName()).log(Level.SEVERE, null, ex);
             MessageUtils.showErrorMessage(UNRECOVERABLE_ERROR, CANNOT_INITIATE_THE_FORM);
             System.exit(1);
         }
@@ -204,10 +166,10 @@ public class LoginPanel extends javax.swing.JPanel {
     }
 
     private void initRepository() throws Exception {
-        
+
         repository = RepositoryFactory.getRepository();
     }
-    
+
     private boolean formValid() {
 
         boolean formOk = true;
