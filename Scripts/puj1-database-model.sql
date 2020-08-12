@@ -9,20 +9,20 @@ GO
 CREATE TABLE Actor
 (
 	IDActor		int				CONSTRAINT PK_Actor PRIMARY KEY IDENTITY(1,1),
-	Fullname	nvarchar(100)	NOT NULL
+	Fullname	nvarchar(100)	CONSTRAINT UQ_Actor_Fullname UNIQUE NOT NULL
 )
 GO
 
 CREATE TABLE Director
 (
 	IDDirector	int				CONSTRAINT PK_Director PRIMARY KEY IDENTITY(1,1),
-	Fullname	nvarchar(100)	NOT NULL
+	Fullname	nvarchar(100)	CONSTRAINT UQ_Diretor_Fullname UNIQUE NOT NULL
 )
 GO
 
 CREATE TABLE ApplicationUserType
 (
-	IDApplicationUserType		int		CONSTRAINT PK_ApplicationUserType PRIMARY KEY IDENTITY(1,1),
+	IDApplicationUserType		int	CONSTRAINT PK_ApplicationUserType PRIMARY KEY IDENTITY(1,1),
 	UserType					nvarchar(25)
 )
 GO
@@ -30,7 +30,7 @@ GO
 CREATE TABLE ApplicationUser
 (
 	IDAplicationUser		int				CONSTRAINT PK_ApplicationUSER PRIMARY KEY IDENTITY(1,1),
-	Username				nvarchar(50)	CONSTRAINT UQ_Username NOT NULL UNIQUE,
+	Username				nvarchar(50)	CONSTRAINT UQ_Username UNIQUE NOT NULL,
 	Password				nvarchar(20)	NOT NULL,
 	ApplicationUserTypeID	int				CONSTRAINT FK_ApplicationUser_ApplicationUserType
 		FOREIGN KEY REFERENCES ApplicationUserType(IDApplicationUserType) NOT NULL
@@ -39,22 +39,22 @@ GO
 
 CREATE TABLE Genre
 (
-	IDGenre		int	CONSTRAINT PK_Genre	PRIMARY KEY IDENTITY(1,1),
-	GenreName	nvarchar(50)
+	IDGenre		int				CONSTRAINT PK_Genre	PRIMARY KEY IDENTITY(1,1),
+	GenreName	nvarchar(50)	CONSTRAINT UQ_GenreName UNIQUE NOT NULL
 )
 GO
 
 CREATE TABLE Movie
 (
-	IDMovie				int				CONSTRAINT PK_Movie		PRIMARY KEY IDENTITY(1,1),
-	Title				nvarchar(50)	NOT NULL,
-	PublishedDate		datetime		NOT NULL,
-	MovieDescription	nvarchar(100)	NULL,
-	OriginalName		nvarchar(50)	NULL,
+	IDMovie				int				CONSTRAINT PK_Movie	PRIMARY KEY IDENTITY(1,1),
+	Title				nvarchar(75)	NOT NULL,
+	PublishedDate		nvarchar(25)	NOT NULL,
+	MovieDescription	nvarchar(max)	NULL,
+	OriginalName		nvarchar(75)	NULL,
 	MovieLength			nvarchar(5)		NULL,
-	PicturePath			nvarchar(90)	NULL,
-	Link				nvarchar(90)	NULL,
-	StartDate			nvarchar(50)	NULL
+	PicturePath			nvarchar(100)	NULL,
+	Link				nvarchar(max)	NULL,
+	StartDate			nvarchar(15)	NULL
 )
 GO
 
@@ -120,5 +120,61 @@ AS
 BEGIN
 	INSERT INTO ApplicationUser (Username, Password, ApplicationUserTypeID) VALUES
 		(TRIM(@Username), TRIM(@Password), 2)
+END
+GO
+
+CREATE PROCEDURE CreateMovie
+	@Title nvarchar(75),
+	@PublishedDate nvarchar(25),
+	@Description nvarchar(max),
+	@OriginalName nvarchar(75),
+	@Directors nvarchar(max),
+	@Actors nvarchar(max),
+	@Length nvarchar(5),
+	@Genre nvarchar(max),
+	@PicturePath nvarchar(100),
+	@Link nvarchar(max),
+	@StartDate nvarchar(15)
+AS
+BEGIN
+	-- in case some of the data is "bigger than" nvarchar(max) 
+	SET ANSI_WARNINGS  OFF;
+	
+	--------------------------------------------------------------------------------------------------------------------------
+	INSERT INTO Movie (Title, PublishedDate, MovieDescription, OriginalName, MovieLength, PicturePath, Link, StartDate) VALUES
+	(
+		TRIM(@Title), 
+		TRIM(@PublishedDate),
+		TRIM(@Description),
+		TRIM(@OriginalName),
+		TRIM(@Length), 
+		TRIM(@PicturePath),
+		TRIM(@Link), 
+		TRIM(@StartDate)
+	)
+	DECLARE @IDMovie int = SCOPE_IDENTITY()
+
+	--------------------------------------------------------------------------------------------------------------------------
+	INSERT INTO Genre (GenreName) 
+	SELECT TRIM(value) FROM string_split(@Genre, ',') WHERE RTRIM(value) <> ''
+
+	INSERT INTO Director(Fullname) 
+	SELECT TRIM(value) FROM string_split(@Directors, ',') WHERE RTRIM(value) <> ''
+
+	INSERT INTO Actor(Fullname) 
+	SELECT TRIM(value) FROM string_split(@Actors, ',') WHERE RTRIM(value) <> ''
+	
+	--------------------------------------------------------------------------------------------------------------------------
+	INSERT INTO MovieGenre (MovieID, GenreID)
+	SELECT @IDMovie, IDGenre from Genre where GenreName IN (select TRIM(value) from string_split(@Genre, ',') WHERE RTRIM(value) <> '')
+
+	INSERT INTO MovieDirector (MovieID, DirectorID)
+	SELECT @IDMovie, IDDirector from Director where Fullname IN (select TRIM(value) from string_split(@Directors, ',') WHERE RTRIM(value) <> '')
+
+	INSERT INTO MovieActor (MovieID, ActorID)
+	SELECT @IDMovie, IDActor from Actor where Fullname IN (select TRIM(value) from string_split(@Actors, ',') WHERE RTRIM(value) <> '')
+	
+	--------------------------------------------------------------------------------------------------------------------------
+	SET ANSI_WARNINGS ON;
 END
 GO

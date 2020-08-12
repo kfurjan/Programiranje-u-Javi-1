@@ -20,15 +20,15 @@ import javax.swing.text.JTextComponent;
  * @author Kevin Furjan
  */
 public class LoginPanel extends javax.swing.JPanel {
-
+    
     Repository repository;
-
+    
     private List<JTextComponent> validationFields;
     private List<JLabel> errorLabels;
-
+    
     private static final String ADMIN_PANEL = "Admin panel";
     private static final String CREATE_NEW_USER_PANEL = "Create new user";
-
+    
     private static final String CANNOT_INITIATE_THE_FORM = "Cannot initiate the form";
     private static final String LOGIN_ERROR = "Error while loging in";
     private static final String UNRECOVERABLE_ERROR = "Unrecoverable error";
@@ -135,7 +135,7 @@ public class LoginPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-
+        
         try {
             if (formValid()) {
                 String username = txtUsername.getText().trim();
@@ -146,9 +146,6 @@ public class LoginPanel extends javax.swing.JPanel {
                 if (user.isPresent()) {
                     switch (user.get().getUserType()) {
                         case Administrator:
-                            // testing purposes
-                            MovieParser.parse().forEach(System.out::println);
-                            
                             topFrame.getTpContent().remove(this);
                             topFrame.getTpContent().add(ADMIN_PANEL, new AdminPanel());
                             break;
@@ -173,7 +170,7 @@ public class LoginPanel extends javax.swing.JPanel {
         MainFrame topFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
         topFrame.getTpContent().add(CREATE_NEW_USER_PANEL, new CreateUserPanel());
     }//GEN-LAST:event_btnCreateNewUserActionPerformed
-   
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCreateNewUser;
     private javax.swing.JButton btnLogin;
@@ -186,7 +183,7 @@ public class LoginPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void init() {
-
+        
         try {
             initValidation();
             initRepository();
@@ -196,22 +193,22 @@ public class LoginPanel extends javax.swing.JPanel {
             System.exit(1);
         }
     }
-
+    
     private void initValidation() {
-
+        
         errorLabels = Arrays.asList(lblPasswordError, lblUsernameError);
         validationFields = Arrays.asList(txtUsername, txtPassword);
     }
-
+    
     private void initRepository() throws Exception {
         
         repository = RepositoryFactory.getRepository();
     }
     
     private boolean formValid() {
-
+        
         boolean formOk = true;
-
+        
         for (int i = 0; i < validationFields.size(); i++) {
             formOk &= !validationFields
                     .get(i)
