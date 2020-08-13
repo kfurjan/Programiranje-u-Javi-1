@@ -1,7 +1,6 @@
 package hr.algebra.model;
 
 /**
- *
  * @author Kevin Furjan
  */
 public class ApplicationUser {

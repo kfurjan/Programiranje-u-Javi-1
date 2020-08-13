@@ -1,10 +1,10 @@
 package hr.algebra.repository.sql;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
+
 import javax.sql.DataSource;
 
 /**
- *
  * @author Kevin Furjan
  */
 public class DataSourceSingleton {

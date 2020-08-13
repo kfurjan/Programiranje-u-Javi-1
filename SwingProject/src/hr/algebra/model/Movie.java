@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- *
  * @author Kevin Furjan
  */
 public class Movie {

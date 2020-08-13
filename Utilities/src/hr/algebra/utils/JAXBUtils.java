@@ -1,17 +1,16 @@
 package hr.algebra.utils;
 
-import java.io.File;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import java.io.File;
 
 /**
- *
  * @author dnlbe
  */
 public class JAXBUtils {
-    
+
     public static void save(Object object, String filename) throws JAXBException {
         JAXBContext context = JAXBContext.newInstance(object.getClass());
         Marshaller marshaller = context.createMarshaller();
@@ -24,5 +23,5 @@ public class JAXBUtils {
         Unmarshaller unmarshaller = context.createUnmarshaller();
         return unmarshaller.unmarshal(new File(filename));
     }
-    
+
 }

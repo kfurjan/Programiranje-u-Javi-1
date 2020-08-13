@@ -1,9 +1,6 @@
 package hr.algebra.model;
 
-import java.util.Optional;
-
 /**
- *
  * @author Kevin Furjan
  */
 public enum UserType {
@@ -13,7 +10,7 @@ public enum UserType {
 
     private final int userTypeId;
 
-    private UserType(int userTypeId) {
+    UserType(int userTypeId) {
         this.userTypeId = userTypeId;
     }
 

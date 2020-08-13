@@ -3,7 +3,6 @@ package hr.algebra.repository;
 import hr.algebra.repository.sql.SqlRepository;
 
 /**
- *
  * @author Kevin Furjan
  */
 public class RepositoryFactory {

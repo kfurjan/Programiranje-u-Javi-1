@@ -5,6 +5,13 @@ import hr.algebra.factory.UrlConnectionFactory;
 import hr.algebra.model.Movie;
 import hr.algebra.utils.FileUtils;
 import hr.algebra.utils.StringUtils;
+
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Characters;
+import javax.xml.stream.events.StartElement;
+import javax.xml.stream.events.XMLEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -14,38 +21,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.Characters;
-import javax.xml.stream.events.StartElement;
-import javax.xml.stream.events.XMLEvent;
 
 /**
- *
  * @author Kevin Furjan
  */
 public class MovieParser {
-    
+
     private static final String RSS_URL = "https://www.blitz-cinestar.hr/rss.aspx?najava=1";
     private static final int TIMEOUT = 10000;
     private static final String REQUEST_METHOD = "GET";
     private static final String EXT = ".jpg";
     private static final String DIR = "assets";
-    
+
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.RFC_1123_DATE_TIME;
     private static final Random RANDOM = new Random();
-    
+
     public static List<Movie> parse() throws IOException, XMLStreamException {
-        
+
         List<Movie> movies = new ArrayList<>();
         HttpURLConnection con = UrlConnectionFactory.getHttpUrlConnection(RSS_URL, TIMEOUT, REQUEST_METHOD);
         XMLEventReader reader = ParserFactory.createStaxParser(con.getInputStream());
-        
+
         Movie movie = null;
-        StartElement startElement = null;
+        StartElement startElement;
         Optional<RSSTagType> rssTagTyoe = Optional.empty();
-        
+
         while (reader.hasNext()) {
             XMLEvent event = reader.nextEvent();
             switch (event.getEventType()) {
@@ -128,9 +128,22 @@ public class MovieParser {
         }
         return movies;
     }
-    
+
+    private static void handlePicture(Movie movie, String pictureUrl) throws IOException {
+
+        String ext = pictureUrl.substring(pictureUrl.lastIndexOf("."));
+        if (ext.length() > 4) {
+            ext = EXT;
+        }
+        String pictureName = Math.abs(RANDOM.nextInt()) + ext;
+        String localPicturePath = DIR + File.separator + pictureName;
+
+        FileUtils.copyFromUrl(pictureUrl, localPicturePath);
+        movie.setPicturePath(localPicturePath);
+    }
+
     private enum RSSTagType {
-        
+
         ITEM("item"),
         TITLE("title"),
         PUB_DATE("pubDate"),
@@ -143,13 +156,13 @@ public class MovieParser {
         POSTER("plakat"),
         LINK("link"),
         START_DATE("pocetak");
-        
+
         private final String name;
-        
-        private RSSTagType(String name) {
+
+        RSSTagType(String name) {
             this.name = name;
         }
-        
+
         private static Optional<RSSTagType> from(String name) {
             for (RSSTagType value : values()) {
                 if (value.name.equals(name)) {
@@ -158,18 +171,5 @@ public class MovieParser {
             }
             return Optional.empty();
         }
-    }
-    
-    private static void handlePicture(Movie movie, String pictureUrl) throws IOException {
-        
-        String ext = pictureUrl.substring(pictureUrl.lastIndexOf("."));
-        if (ext.length() > 4) {
-            ext = EXT;
-        }
-        String pictureName = Math.abs(RANDOM.nextInt()) + ext;
-        String localPicturePath = DIR + File.separator + pictureName;
-        
-        FileUtils.copyFromUrl(pictureUrl, localPicturePath);
-        movie.setPicturePath(localPicturePath);
     }
 }

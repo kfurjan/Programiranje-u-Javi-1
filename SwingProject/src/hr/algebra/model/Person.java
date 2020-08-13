@@ -1,11 +1,10 @@
 package hr.algebra.model;
 
 /**
- *
  * @author Kevin Furjan
  */
 public class Person {
-    
+
     private final String firstName;
     private final String lastName;
 

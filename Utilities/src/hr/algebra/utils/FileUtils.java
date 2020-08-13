@@ -1,23 +1,20 @@
 package hr.algebra.utils;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileSystemView;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Optional;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.filechooser.FileSystemView;
 
 /**
- *
  * @author dnlbe
  */
 public class FileUtils {
@@ -28,7 +25,7 @@ public class FileUtils {
     private static final String TXT = "txt";
 
 
-    public static Optional<File> uploadFile(String description, String...extensions) {
+    public static Optional<File> uploadFile(String description, String... extensions) {
         JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         chooser.setFileFilter(new FileNameExtensionFilter(description, extensions));
         chooser.setDialogTitle(UPLOAD);
@@ -37,12 +34,12 @@ public class FileUtils {
         if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
             File selectedFile = chooser.getSelectedFile();
             String extension = selectedFile.getName().substring(selectedFile.getName().lastIndexOf(".") + 1);
-            return Arrays.asList(extensions).contains(extension.toLowerCase()) ? Optional.of(selectedFile) : Optional.empty();            
+            return Arrays.asList(extensions).contains(extension.toLowerCase()) ? Optional.of(selectedFile) : Optional.empty();
         }
         return Optional.empty();
     }
 
-    public static void copyFromUrl(String source, String destination) throws MalformedURLException, IOException {
+    public static void copyFromUrl(String source, String destination) throws IOException {
         createDirHierarchy(destination);
         URL url = new URL(source);
         try (InputStream in = url.openStream()) {
@@ -50,7 +47,7 @@ public class FileUtils {
         }
     }
 
-    public static void copy(String source, String destination) throws FileNotFoundException, IOException {
+    public static void copy(String source, String destination) throws IOException {
         createDirHierarchy(destination);
         Files.copy(Paths.get(source), new FileOutputStream(destination));
     }
@@ -61,9 +58,9 @@ public class FileUtils {
             Files.createDirectories(Paths.get(dir));
         }
     }
-    
+
     public static boolean filenameHasExtension(String filename, int length) {
-        return filename.contains(".") && filename.substring(filename.lastIndexOf(".")+1).length() == length;
+        return filename.contains(".") && filename.substring(filename.lastIndexOf(".") + 1).length() == length;
     }
 
     public static Optional<File> saveTextInFile(String text, Optional<File> optFile) throws IOException {
