@@ -23,8 +23,7 @@ public class Movie {
     private String link;
     private String startDate;
 
-    public Movie() {
-    }
+    public Movie() {}
 
     public Movie(String title, LocalDateTime publishedDate, String description, String originalName, String directors, String actors, String length, String genre, String picturePath, String link, String startDate) {
         this.title = title;
@@ -35,6 +34,17 @@ public class Movie {
         this.actors = actors;
         this.length = length;
         this.genre = genre;
+        this.picturePath = picturePath;
+        this.link = link;
+        this.startDate = startDate;
+    }
+
+    public Movie(String title, LocalDateTime publishedDate, String description, String originalName, String length, String picturePath, String link, String startDate) {
+        this.title = title;
+        this.publishedDate = publishedDate;
+        this.description = description;
+        this.originalName = originalName;
+        this.length = length;
         this.picturePath = picturePath;
         this.link = link;
         this.startDate = startDate;
@@ -130,10 +140,6 @@ public class Movie {
 
     @Override
     public String toString() {
-        return "Movie{" + "title=" + title + ", publishedDate=" + publishedDate
-                + ", description=" + description + ", originalName=" + originalName
-                + ", directors=" + directors + ", actors=" + actors + ", length="
-                + length + ", genre=" + genre + ", picturePath=" + picturePath
-                + ", link=" + link + ", startDate=" + startDate + '}';
+        return title + " - " + originalName + " - " + link;
     }
 }

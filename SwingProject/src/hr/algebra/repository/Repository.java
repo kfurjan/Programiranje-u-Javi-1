@@ -14,4 +14,6 @@ public interface Repository {
     public Optional<ApplicationUser> GetApplicationUser(String username, String password) throws Exception;
     public void CreateNewUser(String username, String password) throws Exception;
     public void CreateMovies(List<Movie> movies) throws Exception;
+    public List<Movie> SelectMovies() throws Exception;
+    public void ClearMovies() throws Exception;
 }

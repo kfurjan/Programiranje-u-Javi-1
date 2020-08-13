@@ -1,16 +1,36 @@
 package hr.algebra.panel;
 
+import hr.algebra.model.Movie;
+import hr.algebra.parser.rss.MovieParser;
+import hr.algebra.repository.Repository;
+import hr.algebra.repository.RepositoryFactory;
+import hr.algebra.utils.MessageUtils;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
+
 /**
  *
  * @author Kevin Furjan
  */
 public class AdminPanel extends javax.swing.JPanel {
 
+    Repository repository;
+    private DefaultListModel<Movie> moviesModel;
+
+    private static final String UNRECOVERABLE_ERROR = "Unrecoverable error";
+    private static final String CANNOT_INITIATE_THE_FORM = "Cannot initiate the form";
+    private static final String DOWNLOAD_ERROR = "Error while downloading data";
+    private static final String DATA_DELETION_ERROR = "Error while clearing data";
+
     /**
      * Creates new form AdminPanel
      */
     public AdminPanel() {
+
         initComponents();
+        init();
     }
 
     /**
@@ -24,26 +44,45 @@ public class AdminPanel extends javax.swing.JPanel {
 
         btnClearData = new javax.swing.JButton();
         btnDownloadData = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        lsMoviesList = new javax.swing.JList<>();
 
         btnClearData.setText("Clear data");
+        btnClearData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearDataActionPerformed(evt);
+            }
+        });
 
         btnDownloadData.setText("Download data");
+        btnDownloadData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDownloadDataActionPerformed(evt);
+            }
+        });
+
+        jScrollPane1.setViewportView(lsMoviesList);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnDownloadData, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 148, Short.MAX_VALUE)
-                .addComponent(btnClearData, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnDownloadData, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 148, Short.MAX_VALUE)
+                        .addComponent(btnClearData, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(283, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClearData, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnDownloadData, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -51,9 +90,67 @@ public class AdminPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnDownloadDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDownloadDataActionPerformed
+
+        try {
+            List<Movie> movies = MovieParser.parse();
+            repository.CreateMovies(movies);
+            loadModel();
+        } catch (Exception ex) {
+            Logger.getLogger(LoginPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage(UNRECOVERABLE_ERROR, DOWNLOAD_ERROR);
+            System.exit(1);
+        }
+    }//GEN-LAST:event_btnDownloadDataActionPerformed
+
+    private void btnClearDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearDataActionPerformed
+
+        try {
+            repository.ClearMovies();
+            loadModel();
+        } catch (Exception ex) {
+            Logger.getLogger(LoginPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage(UNRECOVERABLE_ERROR, DATA_DELETION_ERROR);
+            System.exit(1);
+        }
+    }//GEN-LAST:event_btnClearDataActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClearData;
     private javax.swing.JButton btnDownloadData;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JList<Movie> lsMoviesList;
     // End of variables declaration//GEN-END:variables
+
+    private void init() {
+
+        try {
+            initRepository();
+            initMoviesModel();
+            loadModel();
+        } catch (Exception ex) {
+            Logger.getLogger(LoginPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage(UNRECOVERABLE_ERROR, CANNOT_INITIATE_THE_FORM);
+            System.exit(1);
+        }
+    }
+
+    private void initRepository() throws Exception {
+
+        repository = RepositoryFactory.getRepository();
+    }
+
+    private void initMoviesModel() {
+
+        moviesModel = new DefaultListModel<>();
+    }
+
+    private void loadModel() throws Exception {
+
+        List<Movie> movies = repository.SelectMovies();
+        moviesModel.clear();
+        movies.forEach(movie -> moviesModel.addElement(movie));
+        lsMoviesList.setModel(moviesModel);
+    }
 }

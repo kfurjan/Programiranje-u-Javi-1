@@ -2,7 +2,6 @@ package hr.algebra.panel;
 
 import hr.algebra.frame.MainFrame;
 import hr.algebra.model.ApplicationUser;
-import hr.algebra.parser.rss.MovieParser;
 import hr.algebra.repository.Repository;
 import hr.algebra.repository.RepositoryFactory;
 import hr.algebra.utils.MessageUtils;
@@ -29,9 +28,9 @@ public class LoginPanel extends javax.swing.JPanel {
     private static final String ADMIN_PANEL = "Admin panel";
     private static final String CREATE_NEW_USER_PANEL = "Create new user";
     
-    private static final String CANNOT_INITIATE_THE_FORM = "Cannot initiate the form";
     private static final String LOGIN_ERROR = "Error while loging in";
     private static final String UNRECOVERABLE_ERROR = "Unrecoverable error";
+    private static final String CANNOT_INITIATE_THE_FORM = "Cannot initiate the form";
 
     /**
      * Creates new form LoginPanel

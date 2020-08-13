@@ -178,3 +178,35 @@ BEGIN
 	SET ANSI_WARNINGS ON;
 END
 GO
+
+CREATE PROCEDURE selectMovies
+AS
+BEGIN
+	SELECT
+		Title,
+		PublishedDate,
+		MovieDescription,
+		OriginalName,
+		MovieLength,
+		PicturePath,
+		Link,
+		StartDate
+	FROM Movie
+END
+GO
+
+CREATE PROCEDURE clearMovies
+AS
+BEGIN
+	DELETE FROM MovieGenre
+	DELETE FROM Genre
+
+	DELETE FROM MovieDirector
+	DELETE FROM Director
+
+	DELETE FROM MovieActor
+	DELETE FROM Actor
+	
+	DELETE FROM Movie
+END
+GO
