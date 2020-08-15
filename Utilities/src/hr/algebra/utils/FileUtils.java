@@ -10,8 +10,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Optional;
 
 /**
@@ -23,7 +25,6 @@ public class FileUtils {
     private static final String SAVE = "Save";
     private static final String TEXT_DOCUMENTS = "Text documents (*.txt)";
     private static final String TXT = "txt";
-
 
     public static Optional<File> uploadFile(String description, String... extensions) {
         JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
@@ -103,4 +104,12 @@ public class FileUtils {
         return Optional.empty();
     }
 
+    public static void deleteDirectory(Path pathToBeDeleted) throws IOException {
+
+        Files
+                .walk(pathToBeDeleted)
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
+    }
 }

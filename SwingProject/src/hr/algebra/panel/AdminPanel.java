@@ -4,7 +4,10 @@ import hr.algebra.model.Movie;
 import hr.algebra.parser.rss.MovieParser;
 import hr.algebra.repository.Repository;
 import hr.algebra.repository.RepositoryFactory;
+import hr.algebra.utils.FileUtils;
 import hr.algebra.utils.MessageUtils;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,8 +19,11 @@ import javax.swing.DefaultListModel;
  */
 public class AdminPanel extends javax.swing.JPanel {
 
+    Path path;
     Repository repository;
     private DefaultListModel<Movie> moviesModel;
+
+    private static final String ASSETS_PATH = "assets";
 
     private static final String UNRECOVERABLE_ERROR = "Unrecoverable error";
     private static final String CANNOT_INITIATE_THE_FORM = "Cannot initiate the form";
@@ -73,7 +79,7 @@ public class AdminPanel extends javax.swing.JPanel {
                     .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnDownloadData, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 148, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 348, Short.MAX_VALUE)
                         .addComponent(btnClearData, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -81,7 +87,7 @@ public class AdminPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClearData, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -107,6 +113,7 @@ public class AdminPanel extends javax.swing.JPanel {
 
         try {
             repository.ClearMovies();
+            FileUtils.deleteDirectory(path);
             loadModel();
         } catch (Exception ex) {
             Logger.getLogger(LoginPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -128,6 +135,7 @@ public class AdminPanel extends javax.swing.JPanel {
         try {
             initRepository();
             initMoviesModel();
+            initAssetsPath();
             loadModel();
         } catch (Exception ex) {
             Logger.getLogger(LoginPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -146,10 +154,16 @@ public class AdminPanel extends javax.swing.JPanel {
         moviesModel = new DefaultListModel<>();
     }
 
+    private void initAssetsPath() {
+
+        path = Paths.get(ASSETS_PATH);
+    }
+
     private void loadModel() throws Exception {
 
         List<Movie> movies = repository.SelectMovies();
         moviesModel.clear();
+        btnClearData.setEnabled((movies.size() > 0));
         movies.forEach(movie -> moviesModel.addElement(movie));
         lsMoviesList.setModel(moviesModel);
     }

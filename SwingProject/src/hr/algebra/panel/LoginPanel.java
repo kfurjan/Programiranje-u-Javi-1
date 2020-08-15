@@ -19,15 +19,18 @@ import javax.swing.text.JTextComponent;
  * @author Kevin Furjan
  */
 public class LoginPanel extends javax.swing.JPanel {
-    
+
     Repository repository;
-    
+
     private List<JTextComponent> validationFields;
     private List<JLabel> errorLabels;
-    
+
+    private static final String MOVIES = "Movies";
+    private static final String ACTORS = "Actors";
+    private static final String DIRECTORS = "Directors";
     private static final String ADMIN_PANEL = "Admin panel";
     private static final String CREATE_NEW_USER_PANEL = "Create new user";
-    
+
     private static final String LOGIN_ERROR = "Error while loging in";
     private static final String UNRECOVERABLE_ERROR = "Unrecoverable error";
     private static final String CANNOT_INITIATE_THE_FORM = "Cannot initiate the form";
@@ -36,7 +39,7 @@ public class LoginPanel extends javax.swing.JPanel {
      * Creates new form LoginPanel
      */
     public LoginPanel() {
-        
+
         initComponents();
         init();
     }
@@ -134,23 +137,27 @@ public class LoginPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        
+
         try {
             if (formValid()) {
                 String username = txtUsername.getText().trim();
                 String password = txtPassword.getText().trim();
                 MainFrame topFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
-                
+
                 Optional<ApplicationUser> user = repository.GetApplicationUser(username, password);
                 if (user.isPresent()) {
                     switch (user.get().getUserType()) {
                         case Administrator:
+                            topFrame.setSize(800, 600);
                             topFrame.getTpContent().remove(this);
                             topFrame.getTpContent().add(ADMIN_PANEL, new AdminPanel());
                             break;
                         case User:
+                            topFrame.setSize(800, 600);
                             topFrame.getTpContent().remove(this);
-                            topFrame.getTpContent().add("User panel", new LoginPanel());
+                            topFrame.getTpContent().add(MOVIES, new MoviePanel());
+                            topFrame.getTpContent().add(ACTORS, new ActorPanel());
+                            topFrame.getTpContent().add(DIRECTORS, new DirectorPanel());
                             break;
                         default:
                             break;
@@ -165,7 +172,7 @@ public class LoginPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void btnCreateNewUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateNewUserActionPerformed
-        
+
         MainFrame topFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
         topFrame.getTpContent().add(CREATE_NEW_USER_PANEL, new CreateUserPanel());
     }//GEN-LAST:event_btnCreateNewUserActionPerformed
@@ -182,7 +189,7 @@ public class LoginPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void init() {
-        
+
         try {
             initValidation();
             initRepository();
@@ -192,22 +199,22 @@ public class LoginPanel extends javax.swing.JPanel {
             System.exit(1);
         }
     }
-    
+
     private void initValidation() {
-        
+
         errorLabels = Arrays.asList(lblPasswordError, lblUsernameError);
         validationFields = Arrays.asList(txtUsername, txtPassword);
     }
-    
+
     private void initRepository() throws Exception {
-        
+
         repository = RepositoryFactory.getRepository();
     }
-    
+
     private boolean formValid() {
-        
+
         boolean formOk = true;
-        
+
         for (int i = 0; i < validationFields.size(); i++) {
             formOk &= !validationFields
                     .get(i)
