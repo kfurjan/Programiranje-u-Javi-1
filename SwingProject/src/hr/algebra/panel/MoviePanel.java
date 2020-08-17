@@ -1,16 +1,31 @@
 package hr.algebra.panel;
 
+import hr.algebra.model.MovieTableModel;
+import hr.algebra.repository.Repository;
+import hr.algebra.repository.RepositoryFactory;
+import hr.algebra.utils.MessageUtils;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ListSelectionModel;
+
 /**
  *
  * @author Kevin Furjan
  */
 public class MoviePanel extends javax.swing.JPanel {
 
+    Repository repository;
+    MovieTableModel moviesTableModel;
+
+    private static final String UNRECOVERABLE_ERROR = "Unrecoverable error";
+    private static final String CANNOT_INITIATE_THE_FORM = "Cannot initiate the form";
+
     /**
      * Creates new form MoviePanel
      */
     public MoviePanel() {
         initComponents();
+        init();
     }
 
     /**
@@ -23,9 +38,9 @@ public class MoviePanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tbMovies = new javax.swing.JTable();
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tbMovies.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -36,7 +51,7 @@ public class MoviePanel extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tbMovies);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -59,6 +74,37 @@ public class MoviePanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tbMovies;
     // End of variables declaration//GEN-END:variables
+
+    private void init() {
+
+        try {
+            initValidation();
+            initRepository();
+            initTable();
+        } catch (Exception ex) {
+            Logger.getLogger(MoviePanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage(UNRECOVERABLE_ERROR, CANNOT_INITIATE_THE_FORM);
+            System.exit(1);
+        }
+    }
+
+    private void initValidation() {
+
+    }
+
+    private void initRepository() throws Exception {
+
+        repository = RepositoryFactory.getRepository();
+    }
+
+    private void initTable() throws Exception {
+
+        tbMovies.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tbMovies.setAutoCreateRowSorter(true);
+        tbMovies.setRowHeight(25);
+        moviesTableModel = new MovieTableModel(repository.SelectMovies());
+        tbMovies.setModel(moviesTableModel);
+    }
 }
