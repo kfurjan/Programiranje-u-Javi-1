@@ -22,8 +22,8 @@ public class LoginPanel extends javax.swing.JPanel {
 
     Repository repository;
 
-    private List<JTextComponent> validationFields;
     private List<JLabel> errorLabels;
+    private List<JTextComponent> validationFields;
 
     private static final String MOVIES = "Movies";
     private static final String ACTORS = "Actors";
