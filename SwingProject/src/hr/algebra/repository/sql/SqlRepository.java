@@ -58,10 +58,10 @@ public class SqlRepository implements Repository {
     }
 
     @Override
-    public Optional<ApplicationUser> GetApplicationUser(String username, String password) throws Exception {
+    public Optional<ApplicationUser> getApplicationUser(String username, String password) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(GET_APPLICATION_USER)) {
+                CallableStatement stmt = con.prepareCall(GET_APPLICATION_USER)) {
 
             stmt.setString(1, username);
             stmt.setString(2, password);
@@ -81,11 +81,11 @@ public class SqlRepository implements Repository {
     }
 
     @Override
-    public void CreateNewUser(String username, String password) throws Exception {
+    public void createNewUser(String username, String password) throws Exception {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(CREATE_NEW_USER)) {
+                CallableStatement stmt = con.prepareCall(CREATE_NEW_USER)) {
 
             stmt.setString(1, username);
             stmt.setString(2, password);
@@ -95,11 +95,11 @@ public class SqlRepository implements Repository {
     }
 
     @Override
-    public void CreateMovies(List<Movie> movies) throws Exception {
+    public void createMovies(List<Movie> movies) throws Exception {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(CREATE_MOVIE)) {
+                CallableStatement stmt = con.prepareCall(CREATE_MOVIE)) {
 
             movies.forEach(handlingConsumerWrapper(movie -> {
                 stmt.setString(1, movie.getTitle());
@@ -120,14 +120,14 @@ public class SqlRepository implements Repository {
     }
 
     @Override
-    public List<Movie> SelectMovies() throws Exception {
+    public List<Movie> selectMovies() throws Exception {
 
         List<Movie> movies = new ArrayList<>();
         DataSource dataSource = DataSourceSingleton.getInstance();
 
         try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(SELECT_MOVIES);
-             ResultSet rs = stmt.executeQuery()) {
+                CallableStatement stmt = con.prepareCall(SELECT_MOVIES);
+                ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 movies.add(new Movie(
@@ -147,11 +147,11 @@ public class SqlRepository implements Repository {
     }
 
     @Override
-    public void ClearMovies() throws Exception {
+    public void clearMovies() throws Exception {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(CLEAR_MOVIES)) {
+                CallableStatement stmt = con.prepareCall(CLEAR_MOVIES)) {
 
             stmt.executeUpdate();
         }

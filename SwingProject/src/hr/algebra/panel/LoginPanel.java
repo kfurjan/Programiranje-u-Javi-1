@@ -144,7 +144,7 @@ public class LoginPanel extends javax.swing.JPanel {
                 String password = txtPassword.getText().trim();
                 MainFrame topFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
 
-                Optional<ApplicationUser> user = repository.GetApplicationUser(username, password);
+                Optional<ApplicationUser> user = repository.getApplicationUser(username, password);
                 if (user.isPresent()) {
                     switch (user.get().getUserType()) {
                         case Administrator:
@@ -153,7 +153,7 @@ public class LoginPanel extends javax.swing.JPanel {
                             topFrame.getTpContent().add(ADMIN_PANEL, new AdminPanel());
                             break;
                         case User:
-                            topFrame.setSize(800, 600);
+                            topFrame.setSize(1200, 800);
                             topFrame.getTpContent().remove(this);
                             topFrame.getTpContent().add(MOVIES, new MoviePanel());
                             topFrame.getTpContent().add(ACTORS, new ActorPanel());

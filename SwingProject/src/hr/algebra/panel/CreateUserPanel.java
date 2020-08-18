@@ -126,7 +126,7 @@ public class CreateUserPanel extends javax.swing.JPanel {
                 String password = txtPassword.getText().trim();
                 MainFrame topFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
 
-                repository.CreateNewUser(username, password);
+                repository.createNewUser(username, password);
                 MessageUtils.showInformationMessage(USER_CREATED_TITLE, NEW_USER_CREATED);
                 topFrame.getTpContent().remove(this);
             }

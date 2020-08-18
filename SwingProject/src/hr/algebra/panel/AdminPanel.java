@@ -100,7 +100,7 @@ public class AdminPanel extends javax.swing.JPanel {
 
         try {
             List<Movie> movies = MovieParser.parse();
-            repository.CreateMovies(movies);
+            repository.createMovies(movies);
             loadModel();
         } catch (Exception ex) {
             Logger.getLogger(LoginPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -112,7 +112,7 @@ public class AdminPanel extends javax.swing.JPanel {
     private void btnClearDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearDataActionPerformed
 
         try {
-            repository.ClearMovies();
+            repository.clearMovies();
             FileUtils.deleteDirectory(path);
             loadModel();
         } catch (Exception ex) {
@@ -161,7 +161,7 @@ public class AdminPanel extends javax.swing.JPanel {
 
     private void loadModel() throws Exception {
 
-        List<Movie> movies = repository.SelectMovies();
+        List<Movie> movies = repository.selectMovies();
         moviesModel.clear();
         btnClearData.setEnabled((movies.size() > 0));
         movies.forEach(movie -> moviesModel.addElement(movie));

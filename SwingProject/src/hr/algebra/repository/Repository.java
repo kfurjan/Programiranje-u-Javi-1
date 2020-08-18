@@ -11,13 +11,13 @@ import java.util.Optional;
  */
 public interface Repository {
 
-    Optional<ApplicationUser> GetApplicationUser(String username, String password) throws Exception;
+    Optional<ApplicationUser> getApplicationUser(String username, String password) throws Exception;
 
-    void CreateNewUser(String username, String password) throws Exception;
+    void createNewUser(String username, String password) throws Exception;
 
-    void CreateMovies(List<Movie> movies) throws Exception;
+    void createMovies(List<Movie> movies) throws Exception;
 
-    List<Movie> SelectMovies() throws Exception;
+    List<Movie> selectMovies() throws Exception;
 
-    void ClearMovies() throws Exception;
+    void clearMovies() throws Exception;
 }
