@@ -4,12 +4,21 @@ import hr.algebra.model.Movie;
 import hr.algebra.model.MovieTableModel;
 import hr.algebra.repository.Repository;
 import hr.algebra.repository.RepositoryFactory;
+import hr.algebra.utils.FileUtils;
+import hr.algebra.utils.IconUtils;
 import hr.algebra.utils.MessageUtils;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.ListSelectionModel;
 import javax.swing.text.JTextComponent;
@@ -23,11 +32,26 @@ public class MoviePanel extends javax.swing.JPanel {
     Repository repository;
     MovieTableModel moviesTableModel;
 
+    private Movie selectedMovie;
+
     private List<JLabel> errorLabels;
     private List<JTextComponent> validationFields;
 
+    private static final String DIR = "assets";
+    private static final Random RANDOM = new Random();
+
+    private static final String IMAGE_PATH = "/placeholder/no_image.png";
+    private static final String MOVIE_ADDED = "Movie added";
+    private static final String CHOOSE_A_MOVIE = "Please choose a movie to update";
+    private static final String NEW_MOVIE_ADDED = "New movie has been successfully added";
+    private static final String WRONG_OPERATION = "Wrong operation";
     private static final String MOVIE_PUBLISHED_DATE = "MoviePublishedDate";
 
+    private static final String ERROR = "Error";
+    private static final String NEW_MOVIE_ERROR = "Unable to create new movie!";
+    private static final String SET_ICON_ERROR = "Unable to set icon!";
+    private static final String SHOW_MOVIE_ERROR = "Unable to show article!";
+    private static final String UPDATE_MOVIE_ERROR = "Unable to update movie!";
     private static final String UNRECOVERABLE_ERROR = "Unrecoverable error";
     private static final String CANNOT_INITIATE_THE_FORM = "Cannot initiate the form";
 
@@ -76,7 +100,7 @@ public class MoviePanel extends javax.swing.JPanel {
         btnUpdateMovie = new javax.swing.JButton();
         txtPicturePath = new javax.swing.JTextField();
         btnChooseImage = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        lblPoster = new javax.swing.JLabel();
 
         tbMovies.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -89,6 +113,16 @@ public class MoviePanel extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tbMovies.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbMoviesMouseClicked(evt);
+            }
+        });
+        tbMovies.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tbMoviesKeyReleased(evt);
+            }
+        });
         jScrollPane1.setViewportView(tbMovies);
 
         lblTitle.setText("Title");
@@ -161,8 +195,7 @@ public class MoviePanel extends javax.swing.JPanel {
             }
         });
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/no_image.png"))); // NOI18N
-        jLabel1.setText("jLabel1");
+        lblPoster.setIcon(new javax.swing.ImageIcon(getClass().getResource("/placeholder/no_image.png"))); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -179,7 +212,7 @@ public class MoviePanel extends javax.swing.JPanel {
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(btnAddMovie, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
+                                        .addComponent(btnAddMovie, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
                                         .addGap(79, 79, 79))
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -221,26 +254,26 @@ public class MoviePanel extends javax.swing.JPanel {
                                             .addComponent(lblLength)
                                             .addComponent(btnUpdateMovie, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(lblLink))
-                                        .addGap(0, 15, Short.MAX_VALUE))))
+                                        .addGap(0, 9, Short.MAX_VALUE))))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(btnDeleteMovie, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGap(21, 21, 21)))
                         .addGap(186, 186, 186)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(txtPicturePath, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnChooseImage))
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 499, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(36, 36, 36)))
+                            .addComponent(lblPoster, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(41, 41, 41)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(15, 15, 15)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(lblTitle)
@@ -291,11 +324,10 @@ public class MoviePanel extends javax.swing.JPanel {
                             .addComponent(btnUpdateMovie, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(btnDeleteMovie, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(15, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 77, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(lblPoster, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtPicturePath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnChooseImage))
@@ -307,27 +339,68 @@ public class MoviePanel extends javax.swing.JPanel {
 
     private void btnChooseImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChooseImageActionPerformed
 
+        Optional<File> file = FileUtils.uploadFile("Images", "jpg", "jpeg", "png");
+        if (file.isPresent()) {
+            txtPicturePath.setText(file.get().getAbsolutePath());
+            setIcon(lblPoster, file.get());
+        }
     }//GEN-LAST:event_btnChooseImageActionPerformed
 
     private void btnAddMovieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMovieActionPerformed
 
         if (formValid()) {
             try {
+                String localPicturePath = uploadPicture();
+                Movie movie = new Movie(
+                        txtTitle.getText().trim(),
+                        LocalDateTime.parse(txtPublishedDate.getText().trim(), Movie.DATE_FORMATTER),
+                        txtDescription.getText().trim(),
+                        txtOriginalName.getText().trim(),
+                        txtLength.getText().trim(),
+                        localPicturePath,
+                        txtLink.getText().trim(),
+                        txtStartDate.getText().trim());
 
-            } catch (Exception e) {
+                repository.createMovie(movie);
+                moviesTableModel.setMovies(repository.selectMovies());
+                clearForm();
+
+                MessageUtils.showInformationMessage(MOVIE_ADDED, NEW_MOVIE_ADDED);
+            } catch (Exception ex) {
+                Logger.getLogger(MoviePanel.class.getName()).log(Level.SEVERE, null, ex);
+                MessageUtils.showErrorMessage(ERROR, NEW_MOVIE_ERROR);
             }
         }
     }//GEN-LAST:event_btnAddMovieActionPerformed
 
     private void btnUpdateMovieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateMovieActionPerformed
 
+        if (selectedMovie == null) {
+            MessageUtils.showInformationMessage(WRONG_OPERATION, CHOOSE_A_MOVIE);
+            return;
+        }
 
+        if (formValid()) {
+            try {
+
+            } catch (Exception ex) {
+                Logger.getLogger(MoviePanel.class.getName()).log(Level.SEVERE, null, ex);
+                MessageUtils.showErrorMessage(ERROR, UPDATE_MOVIE_ERROR);
+            }
+        }
     }//GEN-LAST:event_btnUpdateMovieActionPerformed
 
     private void btnDeleteMovieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteMovieActionPerformed
 
-
     }//GEN-LAST:event_btnDeleteMovieActionPerformed
+
+    private void tbMoviesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbMoviesKeyReleased
+        showMovie();
+    }//GEN-LAST:event_tbMoviesKeyReleased
+
+    private void tbMoviesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbMoviesMouseClicked
+        showMovie();
+    }//GEN-LAST:event_tbMoviesMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -335,7 +408,6 @@ public class MoviePanel extends javax.swing.JPanel {
     private javax.swing.JButton btnChooseImage;
     private javax.swing.JButton btnDeleteMovie;
     private javax.swing.JButton btnUpdateMovie;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblDescription;
     private javax.swing.JLabel lblDescriptionError;
@@ -345,6 +417,7 @@ public class MoviePanel extends javax.swing.JPanel {
     private javax.swing.JLabel lblLinkError;
     private javax.swing.JLabel lblOriginalName;
     private javax.swing.JLabel lblOriginalNameError;
+    private javax.swing.JLabel lblPoster;
     private javax.swing.JLabel lblPublishedDate;
     private javax.swing.JLabel lblPublishedDateError;
     private javax.swing.JLabel lblStartDate;
@@ -427,7 +500,7 @@ public class MoviePanel extends javax.swing.JPanel {
                     errorLabels
                             .get(i)
                             .setText("");
-                } catch (Exception e) {
+                } catch (Exception ex) {
                     formOk = false;
 
                     errorLabels
@@ -438,5 +511,72 @@ public class MoviePanel extends javax.swing.JPanel {
         }
 
         return formOk;
+    }
+
+    private void showMovie() {
+
+        clearForm();
+        int selectedRow = tbMovies.getSelectedRow();
+        int rowIndex = tbMovies.convertRowIndexToModel(selectedRow);
+        int selectedMovieId = (int) moviesTableModel.getValueAt(rowIndex, 0);
+
+        try {
+            Optional<Movie> optionalMovie = repository.selectMovie(selectedMovieId);
+            if (optionalMovie.isPresent()) {
+                selectedMovie = optionalMovie.get();
+                fillForm(selectedMovie);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(MoviePanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage(ERROR, SHOW_MOVIE_ERROR);
+        }
+    }
+
+    private void clearForm() {
+
+        validationFields.forEach(e -> e.setText(""));
+        errorLabels.forEach(e -> e.setText(""));
+
+        selectedMovie = null;
+        lblPoster.setIcon(new ImageIcon(getClass().getResource(IMAGE_PATH)));
+    }
+
+    private String uploadPicture() throws IOException {
+
+        String picturePath = txtPicturePath.getText().trim();
+        String ext = picturePath.substring(picturePath.lastIndexOf("."));
+        String pictureName = Math.abs(RANDOM.nextInt()) + ext;
+        String localPicturePath = DIR + File.separator + pictureName;
+        FileUtils.copy(picturePath, localPicturePath);
+        return localPicturePath;
+    }
+
+    private void fillForm(Movie movie) {
+
+        if (movie.getPicturePath() != null && Files.exists(Paths.get(movie.getPicturePath()))) {
+            txtPicturePath.setText(movie.getPicturePath());
+            setIcon(lblPoster, new File(movie.getPicturePath()));
+        } else {
+            txtPicturePath.setText("");
+            lblPoster.setIcon(new ImageIcon(getClass().getResource(IMAGE_PATH)));
+        }
+
+        txtTitle.setText(movie.getTitle());
+        txtPublishedDate.setText(movie.getPublishedDate().format(Movie.DATE_FORMATTER));
+        txtDescription.setText(movie.getDescription());
+        txtOriginalName.setText(movie.getOriginalName());
+        txtLength.setText(movie.getLength());
+        txtLink.setText(movie.getLink());
+        txtStartDate.setText(movie.getStartDate());
+    }
+
+    private void setIcon(JLabel label, File file) {
+
+        try {
+            label.setIcon(IconUtils.createIcon(file.getAbsolutePath(), label.getWidth(), label.getHeight()));
+        } catch (IOException ex) {
+            Logger.getLogger(MoviePanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage(ERROR, SET_ICON_ERROR);
+        }
     }
 }

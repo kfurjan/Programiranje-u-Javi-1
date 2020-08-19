@@ -10,7 +10,7 @@ import javax.swing.table.AbstractTableModel;
 public class MovieTableModel extends AbstractTableModel {
 
     private static final String[] COLUMN_NAMES
-            = {"Title", "Published date", "Description", "Original name",
+            = {"ID", "Title", "Published date", "Description", "Original name",
                 "Length", "Picture path", "Link", "Start date"};
 
     List<Movie> movies;
@@ -34,7 +34,7 @@ public class MovieTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return Movie.class.getDeclaredFields().length - 4;
+        return Movie.class.getDeclaredFields().length - 5;
     }
 
     @Override
@@ -42,20 +42,22 @@ public class MovieTableModel extends AbstractTableModel {
 
         switch (columnIndex) {
             case 0:
-                return movies.get(rowIndex).getTitle();
+                return movies.get(rowIndex).getId();
             case 1:
-                return movies.get(rowIndex).getPublishedDate().format(Movie.DATE_FORMATTER);
+                return movies.get(rowIndex).getTitle();
             case 2:
-                return movies.get(rowIndex).getDescription();
+                return movies.get(rowIndex).getPublishedDate().format(Movie.DATE_FORMATTER);
             case 3:
-                return movies.get(rowIndex).getOriginalName();
+                return movies.get(rowIndex).getDescription();
             case 4:
-                return movies.get(rowIndex).getLength();
+                return movies.get(rowIndex).getOriginalName();
             case 5:
-                return movies.get(rowIndex).getPicturePath();
+                return movies.get(rowIndex).getLength();
             case 6:
-                return movies.get(rowIndex).getLink();
+                return movies.get(rowIndex).getPicturePath();
             case 7:
+                return movies.get(rowIndex).getLink();
+            case 8:
                 return movies.get(rowIndex).getStartDate();
             default:
                 throw new RuntimeException("No such column");

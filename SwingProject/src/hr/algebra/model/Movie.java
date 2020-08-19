@@ -10,6 +10,7 @@ public class Movie {
 
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
+    private int id;
     private String title;
     private LocalDateTime publishedDate;
     private String description;
@@ -24,20 +25,6 @@ public class Movie {
 
     public Movie() {}
 
-    public Movie(String title, LocalDateTime publishedDate, String description, String originalName, String directors, String actors, String length, String genre, String picturePath, String link, String startDate) {
-        this.title = title;
-        this.publishedDate = publishedDate;
-        this.description = description;
-        this.originalName = originalName;
-        this.directors = directors;
-        this.actors = actors;
-        this.length = length;
-        this.genre = genre;
-        this.picturePath = picturePath;
-        this.link = link;
-        this.startDate = startDate;
-    }
-
     public Movie(String title, LocalDateTime publishedDate, String description, String originalName, String length, String picturePath, String link, String startDate) {
         this.title = title;
         this.publishedDate = publishedDate;
@@ -47,6 +34,26 @@ public class Movie {
         this.picturePath = picturePath;
         this.link = link;
         this.startDate = startDate;
+    }
+
+    public Movie(int id, String title, LocalDateTime publishedDate, String description, String originalName, String length, String picturePath, String link, String startDate) {
+        this(title, publishedDate, description, originalName, length, picturePath, link, startDate);
+        this.id = id;
+    }
+
+    public Movie(String title, LocalDateTime publishedDate, String description, String originalName, String directors, String actors, String length, String genre, String picturePath, String link, String startDate) {
+        this(title, publishedDate, description, originalName, length, picturePath, link, startDate);
+        this.directors = directors;
+        this.actors = actors;
+        this.genre = genre;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {

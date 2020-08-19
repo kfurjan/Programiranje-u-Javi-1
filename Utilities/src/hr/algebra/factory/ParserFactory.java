@@ -5,9 +5,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import java.io.InputStream;
 
-/**
- * @author dnlbe
- */
 public class ParserFactory {
 
     public static XMLEventReader createStaxParser(InputStream stream) throws XMLStreamException {

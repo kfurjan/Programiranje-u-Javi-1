@@ -5,6 +5,7 @@ import hr.algebra.model.ApplicationUser;
 import hr.algebra.repository.Repository;
 import hr.algebra.repository.RepositoryFactory;
 import hr.algebra.utils.MessageUtils;
+import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +35,7 @@ public class LoginPanel extends javax.swing.JPanel {
     private static final String LOGIN_ERROR = "Error while loging in";
     private static final String UNRECOVERABLE_ERROR = "Unrecoverable error";
     private static final String CANNOT_INITIATE_THE_FORM = "Cannot initiate the form";
+    private static final String CANNOT_INITIATE_CREATE_USER_PANEL = "CreateUserPanel can not be initiated";
 
     /**
      * Creates new form LoginPanel
@@ -57,63 +59,44 @@ public class LoginPanel extends javax.swing.JPanel {
         lblUsername = new javax.swing.JLabel();
         lblPassword = new javax.swing.JLabel();
         txtUsername = new javax.swing.JTextField();
-        txtPassword = new javax.swing.JTextField();
-        btnLogin = new javax.swing.JButton();
         lblUsernameError = new javax.swing.JLabel();
         lblPasswordError = new javax.swing.JLabel();
+        txtPassword = new javax.swing.JPasswordField();
+        jPanel1 = new javax.swing.JPanel();
+        btnLogin = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
         btnCreateNewUser = new javax.swing.JButton();
 
-        java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
-        layout.columnWidths = new int[] {0, 80, 0, 80, 0, 80, 0, 80, 0, 80, 0};
-        layout.rowHeights = new int[] {0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0};
-        layout.columnWeights = new double[] {1.1};
-        layout.rowWeights = new double[] {1.0};
-        setLayout(layout);
+        setLayout(new java.awt.GridBagLayout());
 
         lblUsername.setText("Username:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.ipady = 1;
         add(lblUsername, gridBagConstraints);
 
         lblPassword.setText("Password:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.ipady = 1;
         gridBagConstraints.weightx = 0.2;
         add(lblPassword, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        add(txtUsername, gridBagConstraints);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 5;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 1;
         gridBagConstraints.ipady = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.weightx = 0.2;
-        add(txtPassword, gridBagConstraints);
-
-        btnLogin.setText("Log in");
-        btnLogin.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLoginActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 6;
-        gridBagConstraints.gridwidth = 5;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        add(btnLogin, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(0, 2, 0, 2);
+        add(txtUsername, gridBagConstraints);
 
         lblUsernameError.setForeground(new java.awt.Color(255, 0, 0));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 8;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         add(lblUsernameError, gridBagConstraints);
 
@@ -122,6 +105,43 @@ public class LoginPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 8;
         gridBagConstraints.gridy = 2;
         add(lblPasswordError, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipady = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        gridBagConstraints.insets = new java.awt.Insets(34, 2, 34, 0);
+        add(txtPassword, gridBagConstraints);
+
+        jPanel1.setLayout(new java.awt.GridBagLayout());
+
+        btnLogin.setMnemonic(KeyEvent.VK_ENTER);
+        btnLogin.setText("Log in");
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipady = 1;
+        jPanel1.add(btnLogin, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        add(jPanel1, gridBagConstraints);
+
+        jPanel2.setLayout(new java.awt.GridBagLayout());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 12;
+        gridBagConstraints.weightx = 0.2;
+        add(jPanel2, gridBagConstraints);
 
         btnCreateNewUser.setText("Create new user");
         btnCreateNewUser.addActionListener(new java.awt.event.ActionListener() {
@@ -129,11 +149,7 @@ public class LoginPanel extends javax.swing.JPanel {
                 btnCreateNewUserActionPerformed(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 8;
-        gridBagConstraints.gridwidth = 5;
-        add(btnCreateNewUser, gridBagConstraints);
+        add(btnCreateNewUser, new java.awt.GridBagConstraints());
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
@@ -173,18 +189,26 @@ public class LoginPanel extends javax.swing.JPanel {
 
     private void btnCreateNewUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateNewUserActionPerformed
 
-        MainFrame topFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
-        topFrame.getTpContent().add(CREATE_NEW_USER_PANEL, new CreateUserPanel());
+        try {
+            MainFrame topFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
+            topFrame.getTpContent().add(CREATE_NEW_USER_PANEL, new CreateUserPanel());
+        } catch (Exception ex) {
+            Logger.getLogger(LoginPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage(UNRECOVERABLE_ERROR, CANNOT_INITIATE_CREATE_USER_PANEL);
+            System.exit(1);
+        }
     }//GEN-LAST:event_btnCreateNewUserActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCreateNewUser;
     private javax.swing.JButton btnLogin;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel lblPassword;
     private javax.swing.JLabel lblPasswordError;
     private javax.swing.JLabel lblUsername;
     private javax.swing.JLabel lblUsernameError;
-    private javax.swing.JTextField txtPassword;
+    private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 

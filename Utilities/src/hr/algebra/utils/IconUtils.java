@@ -7,9 +7,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * @author dnlbe
- */
 public class IconUtils {
 
     public static ImageIcon createIcon(String path, int width, int height) throws IOException {

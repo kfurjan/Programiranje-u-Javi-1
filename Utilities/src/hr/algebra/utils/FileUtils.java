@@ -16,9 +16,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Optional;
 
-/**
- * @author dnlbe
- */
 public class FileUtils {
 
     private static final String UPLOAD = "Upload";

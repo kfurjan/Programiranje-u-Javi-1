@@ -2,9 +2,6 @@ package hr.algebra.utils;
 
 import javax.swing.*;
 
-/**
- * @author dnlbe
- */
 public class MessageUtils {
 
     public static void showInformationMessage(String title, String message) {

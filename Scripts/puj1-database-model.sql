@@ -123,7 +123,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE CreateMovie
+CREATE PROCEDURE CreateMovies
 	@Title nvarchar(75),
 	@PublishedDate nvarchar(25),
 	@Description nvarchar(max),
@@ -183,6 +183,7 @@ CREATE PROCEDURE selectMovies
 AS
 BEGIN
 	SELECT
+		IDMovie,
 		Title,
 		PublishedDate,
 		MovieDescription,
@@ -208,5 +209,89 @@ BEGIN
 	DELETE FROM Actor
 	
 	DELETE FROM Movie
+END
+GO
+
+CREATE PROCEDURE CreateMovie
+	@Title nvarchar(75),
+	@PublishedDate nvarchar(25),
+	@Description nvarchar(max),
+	@OriginalName nvarchar(75),
+	@Length nvarchar(5),
+	@PicturePath nvarchar(100),
+	@Link nvarchar(max),
+	@StartDate nvarchar(15)
+AS
+BEGIN
+	INSERT INTO Movie (Title, PublishedDate, MovieDescription, OriginalName, MovieLength, PicturePath, Link, StartDate) VALUES
+	(
+		TRIM(@Title), 
+		TRIM(@PublishedDate),
+		TRIM(@Description),
+		TRIM(@OriginalName),
+		TRIM(@Length), 
+		TRIM(@PicturePath),
+		TRIM(@Link), 
+		TRIM(@StartDate)
+	)
+END
+GO
+
+CREATE PROCEDURE selectMovie
+	@IDMovie int
+AS
+BEGIN
+	SELECT
+		IDMovie,
+		Title,
+		PublishedDate,
+		MovieDescription,
+		OriginalName,
+		MovieLength,
+		PicturePath,
+		Link,
+		StartDate
+	FROM Movie
+	WHERE
+		IDMovie = @IDMovie
+END
+GO
+
+CREATE PROCEDURE UpdateMovie
+	@IDMovie int,
+	@Title nvarchar(75),
+	@PublishedDate nvarchar(25),
+	@Description nvarchar(max),
+	@OriginalName nvarchar(75),
+	@Length nvarchar(5),
+	@PicturePath nvarchar(100),
+	@Link nvarchar(max),
+	@StartDate nvarchar(15)
+AS
+BEGIN
+	UPDATE
+		Movie
+	SET
+		Title = @Title,
+		PublishedDate = @PublishedDate,
+		MovieDescription = @Description,
+		OriginalName = @OriginalName,
+		MovieLength = @Length,
+		PicturePath = @PicturePath,
+		Link = @Link,
+		StartDate = @StartDate
+	WHERE
+		IDMovie = @IDMovie
+END
+GO
+
+CREATE PROCEDURE DeleteMovie
+	@IDMovie int
+AS
+BEGIN
+	DELETE FROM
+		Movie
+	WHERE
+		IDMovie = @IDMovie
 END
 GO

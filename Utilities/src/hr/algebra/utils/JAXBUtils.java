@@ -6,9 +6,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 
-/**
- * @author dnlbe
- */
 public class JAXBUtils {
 
     public static void save(Object object, String filename) throws JAXBException {

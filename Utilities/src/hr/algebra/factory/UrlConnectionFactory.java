@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/**
- * @author dnlbe
- */
 public class UrlConnectionFactory {
 
     public static HttpURLConnection getHttpUrlConnection(String path, int timeout, String requestMethod) throws IOException {
