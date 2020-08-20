@@ -29,9 +29,9 @@ public class MovieParser {
 
     private static final String RSS_URL = "https://www.blitz-cinestar.hr/rss.aspx?najava=1";
     private static final int TIMEOUT = 10000;
-    private static final String REQUEST_METHOD = "GET";
     private static final String EXT = ".jpg";
     private static final String DIR = "assets";
+    private static final String REQUEST_METHOD = "GET";
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.RFC_1123_DATE_TIME;
     private static final Random RANDOM = new Random();

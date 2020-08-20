@@ -113,7 +113,7 @@ public class AdminPanel extends javax.swing.JPanel {
 
         try {
             repository.clearMovies();
-            FileUtils.deleteDirectory(path);
+            FileUtils.deleteDirectoryContents(path);
             loadModel();
         } catch (Exception ex) {
             Logger.getLogger(LoginPanel.class.getName()).log(Level.SEVERE, null, ex);

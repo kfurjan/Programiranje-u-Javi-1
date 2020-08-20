@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.text.JTextComponent;
 
@@ -42,15 +43,20 @@ public class MoviePanel extends javax.swing.JPanel {
 
     private static final String IMAGE_PATH = "/placeholder/no_image.png";
     private static final String MOVIE_ADDED = "Movie added";
+    private static final String MOVIE_UPDATED = "Movie has been updated!";
     private static final String CHOOSE_A_MOVIE = "Please choose a movie to update";
     private static final String NEW_MOVIE_ADDED = "New movie has been successfully added";
     private static final String WRONG_OPERATION = "Wrong operation";
+    private static final String DELETE_MOVIE_TITLE = "Delete movie";
+    private static final String MOVIE_UPDATED_TITLE = "Movie updated";
     private static final String MOVIE_PUBLISHED_DATE = "MoviePublishedDate";
+    private static final String CONFIRM_MOVIE_DELETION = "Do you really want to delete this movie?";
 
     private static final String ERROR = "Error";
+    private static final String DELETE_ERROR = "Unable to delete movie!";
     private static final String NEW_MOVIE_ERROR = "Unable to create new movie!";
     private static final String SET_ICON_ERROR = "Unable to set icon!";
-    private static final String SHOW_MOVIE_ERROR = "Unable to show article!";
+    private static final String SHOW_MOVIE_ERROR = "Unable to show movie!";
     private static final String UPDATE_MOVIE_ERROR = "Unable to update movie!";
     private static final String UNRECOVERABLE_ERROR = "Unrecoverable error";
     private static final String CANNOT_INITIATE_THE_FORM = "Cannot initiate the form";
@@ -382,7 +388,27 @@ public class MoviePanel extends javax.swing.JPanel {
 
         if (formValid()) {
             try {
+                if (selectedMovie.getPicturePath() == null
+                        || !txtPicturePath.getText().trim().equals(selectedMovie.getPicturePath())) {
+                    Files.deleteIfExists(Paths.get(selectedMovie.getPicturePath()));
+                    String localPicturePath = uploadPicture();
+                    selectedMovie.setPicturePath(localPicturePath);
+                }
 
+                selectedMovie.setTitle(txtTitle.getText().trim());
+                selectedMovie.setPublishedDate(LocalDateTime.parse(txtPublishedDate.getText().trim(), Movie.DATE_FORMATTER));
+                selectedMovie.setDescription(txtDescription.getText().trim());
+                selectedMovie.setOriginalName(txtOriginalName.getText().trim());
+                selectedMovie.setLength(txtLength.getText().trim());
+                selectedMovie.setLink(txtLink.getText().trim());
+                selectedMovie.setStartDate(txtStartDate.getText().trim());
+
+                repository.updateMovie(selectedMovie.getId(), selectedMovie);
+                moviesTableModel.setMovies(repository.selectMovies());
+
+                clearForm();
+
+                MessageUtils.showInformationMessage(MOVIE_UPDATED_TITLE, MOVIE_UPDATED);
             } catch (Exception ex) {
                 Logger.getLogger(MoviePanel.class.getName()).log(Level.SEVERE, null, ex);
                 MessageUtils.showErrorMessage(ERROR, UPDATE_MOVIE_ERROR);
@@ -392,6 +418,22 @@ public class MoviePanel extends javax.swing.JPanel {
 
     private void btnDeleteMovieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteMovieActionPerformed
 
+        if (selectedMovie == null) {
+            MessageUtils.showInformationMessage(WRONG_OPERATION, CHOOSE_A_MOVIE);
+            return;
+        }
+        if (MessageUtils.showConfirmDialog(DELETE_MOVIE_TITLE, CONFIRM_MOVIE_DELETION) == JOptionPane.YES_OPTION) {
+            try {
+                Files.deleteIfExists(Paths.get(selectedMovie.getPicturePath()));
+                repository.deleteMovie(selectedMovie.getId());
+                moviesTableModel.setMovies(repository.selectMovies());
+
+                clearForm();
+            } catch (Exception ex) {
+                Logger.getLogger(MoviePanel.class.getName()).log(Level.SEVERE, null, ex);
+                MessageUtils.showErrorMessage(ERROR, DELETE_ERROR);
+            }
+        }
     }//GEN-LAST:event_btnDeleteMovieActionPerformed
 
     private void tbMoviesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbMoviesKeyReleased
@@ -555,7 +597,7 @@ public class MoviePanel extends javax.swing.JPanel {
 
         if (movie.getPicturePath() != null && Files.exists(Paths.get(movie.getPicturePath()))) {
             txtPicturePath.setText(movie.getPicturePath());
-            setIcon(lblPoster, new File(movie.getPicturePath()));
+            // setIcon(lblPoster, new File(movie.getPicturePath()));
         } else {
             txtPicturePath.setText("");
             lblPoster.setIcon(new ImageIcon(getClass().getResource(IMAGE_PATH)));

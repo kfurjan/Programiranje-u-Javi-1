@@ -6,6 +6,23 @@ GO
 
 										/* CREATING TABLES */
 
+CREATE TABLE ApplicationUser
+(
+	IDAplicationUser		int				CONSTRAINT PK_ApplicationUSER PRIMARY KEY IDENTITY(1,1),
+	Username				nvarchar(50)	CONSTRAINT UQ_Username UNIQUE NOT NULL,
+	Password				nvarchar(20)	NOT NULL,
+	ApplicationUserTypeID	int				CONSTRAINT FK_ApplicationUser_ApplicationUserType
+		FOREIGN KEY REFERENCES ApplicationUserType(IDApplicationUserType) NOT NULL
+)
+GO
+
+CREATE TABLE ApplicationUserType
+(
+	IDApplicationUserType		int	CONSTRAINT PK_ApplicationUserType PRIMARY KEY IDENTITY(1,1),
+	UserType					nvarchar(25)
+)
+GO
+
 CREATE TABLE Actor
 (
 	IDActor		int				CONSTRAINT PK_Actor PRIMARY KEY IDENTITY(1,1),
@@ -17,23 +34,6 @@ CREATE TABLE Director
 (
 	IDDirector	int				CONSTRAINT PK_Director PRIMARY KEY IDENTITY(1,1),
 	Fullname	nvarchar(100)	CONSTRAINT UQ_Diretor_Fullname UNIQUE NOT NULL
-)
-GO
-
-CREATE TABLE ApplicationUserType
-(
-	IDApplicationUserType		int	CONSTRAINT PK_ApplicationUserType PRIMARY KEY IDENTITY(1,1),
-	UserType					nvarchar(25)
-)
-GO
-
-CREATE TABLE ApplicationUser
-(
-	IDAplicationUser		int				CONSTRAINT PK_ApplicationUSER PRIMARY KEY IDENTITY(1,1),
-	Username				nvarchar(50)	CONSTRAINT UQ_Username UNIQUE NOT NULL,
-	Password				nvarchar(20)	NOT NULL,
-	ApplicationUserTypeID	int				CONSTRAINT FK_ApplicationUser_ApplicationUserType
-		FOREIGN KEY REFERENCES ApplicationUserType(IDApplicationUserType) NOT NULL
 )
 GO
 
@@ -123,6 +123,22 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE clearMovies
+AS
+BEGIN
+	DELETE FROM MovieGenre
+	DELETE FROM Genre
+
+	DELETE FROM MovieDirector
+	DELETE FROM Director
+
+	DELETE FROM MovieActor
+	DELETE FROM Actor
+	
+	DELETE FROM Movie
+END
+GO
+
 CREATE PROCEDURE CreateMovies
 	@Title nvarchar(75),
 	@PublishedDate nvarchar(25),
@@ -179,39 +195,6 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE selectMovies
-AS
-BEGIN
-	SELECT
-		IDMovie,
-		Title,
-		PublishedDate,
-		MovieDescription,
-		OriginalName,
-		MovieLength,
-		PicturePath,
-		Link,
-		StartDate
-	FROM Movie
-END
-GO
-
-CREATE PROCEDURE clearMovies
-AS
-BEGIN
-	DELETE FROM MovieGenre
-	DELETE FROM Genre
-
-	DELETE FROM MovieDirector
-	DELETE FROM Director
-
-	DELETE FROM MovieActor
-	DELETE FROM Actor
-	
-	DELETE FROM Movie
-END
-GO
-
 CREATE PROCEDURE CreateMovie
 	@Title nvarchar(75),
 	@PublishedDate nvarchar(25),
@@ -234,6 +217,23 @@ BEGIN
 		TRIM(@Link), 
 		TRIM(@StartDate)
 	)
+END
+GO
+
+CREATE PROCEDURE selectMovies
+AS
+BEGIN
+	SELECT
+		IDMovie,
+		Title,
+		PublishedDate,
+		MovieDescription,
+		OriginalName,
+		MovieLength,
+		PicturePath,
+		Link,
+		StartDate
+	FROM Movie
 END
 GO
 
@@ -289,6 +289,21 @@ CREATE PROCEDURE DeleteMovie
 	@IDMovie int
 AS
 BEGIN
+	DELETE FROM
+		MovieDirector
+	WHERE
+		MovieID = @IDMovie
+
+	DELETE FROM
+		MovieActor
+	WHERE
+		MovieID = @IDMovie
+
+	DELETE FROM
+		MovieGenre
+	WHERE
+		MovieID = @IDMovie
+	
 	DELETE FROM
 		Movie
 	WHERE

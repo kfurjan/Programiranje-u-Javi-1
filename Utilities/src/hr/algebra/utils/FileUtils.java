@@ -109,4 +109,13 @@ public class FileUtils {
                 .map(Path::toFile)
                 .forEach(File::delete);
     }
+
+    public static void deleteDirectoryContents(Path pathToBeDeleted) throws IOException {
+
+        Files
+                .walk(pathToBeDeleted)
+                .filter(Files::isRegularFile)
+                .map(Path::toFile)
+                .forEach(File::delete);
+    }
 }
