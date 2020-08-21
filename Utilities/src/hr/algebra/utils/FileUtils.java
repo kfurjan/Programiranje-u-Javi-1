@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,6 +23,7 @@ public class FileUtils {
     private static final String SAVE = "Save";
     private static final String TEXT_DOCUMENTS = "Text documents (*.txt)";
     private static final String TXT = "txt";
+    private static final String REDIRECT_LOCATION = "Location";
 
     public static Optional<File> uploadFile(String description, String... extensions) {
         JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
@@ -38,9 +40,12 @@ public class FileUtils {
     }
 
     public static void copyFromUrl(String source, String destination) throws IOException {
+
         createDirHierarchy(destination);
-        URL url = new URL(source);
-        try (InputStream in = url.openStream()) {
+        URLConnection connection = new URL(source).openConnection();
+        String redirect = connection.getHeaderField(REDIRECT_LOCATION);
+
+        try (InputStream in = new URL(redirect != null ? redirect : source).openStream()) {
             Files.copy(in, Paths.get(destination));
         }
     }
@@ -101,19 +106,19 @@ public class FileUtils {
         return Optional.empty();
     }
 
-    public static void deleteDirectory(Path pathToBeDeleted) throws IOException {
+    public static void deleteDirectory(Path path) throws IOException {
 
         Files
-                .walk(pathToBeDeleted)
+                .walk(path)
                 .sorted(Comparator.reverseOrder())
                 .map(Path::toFile)
                 .forEach(File::delete);
     }
 
-    public static void deleteDirectoryContents(Path pathToBeDeleted) throws IOException {
+    public static void deleteDirectoryContents(Path path) throws IOException {
 
         Files
-                .walk(pathToBeDeleted)
+                .walk(path)
                 .filter(Files::isRegularFile)
                 .map(Path::toFile)
                 .forEach(File::delete);

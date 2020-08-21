@@ -29,18 +29,18 @@ import javax.swing.text.JTextComponent;
  * @author Kevin Furjan
  */
 public class MoviePanel extends javax.swing.JPanel {
-
+    
     Repository repository;
     MovieTableModel moviesTableModel;
-
+    
     private Movie selectedMovie;
-
+    
     private List<JLabel> errorLabels;
     private List<JTextComponent> validationFields;
-
+    
     private static final String DIR = "assets";
     private static final Random RANDOM = new Random();
-
+    
     private static final String IMAGE_PATH = "/placeholder/no_image.png";
     private static final String MOVIE_ADDED = "Movie added";
     private static final String MOVIE_UPDATED = "Movie has been updated!";
@@ -51,7 +51,7 @@ public class MoviePanel extends javax.swing.JPanel {
     private static final String MOVIE_UPDATED_TITLE = "Movie updated";
     private static final String MOVIE_PUBLISHED_DATE = "MoviePublishedDate";
     private static final String CONFIRM_MOVIE_DELETION = "Do you really want to delete this movie?";
-
+    
     private static final String ERROR = "Error";
     private static final String DELETE_ERROR = "Unable to delete movie!";
     private static final String NEW_MOVIE_ERROR = "Unable to create new movie!";
@@ -344,7 +344,7 @@ public class MoviePanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnChooseImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChooseImageActionPerformed
-
+        
         Optional<File> file = FileUtils.uploadFile("Images", "jpg", "jpeg", "png");
         if (file.isPresent()) {
             txtPicturePath.setText(file.get().getAbsolutePath());
@@ -353,7 +353,7 @@ public class MoviePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnChooseImageActionPerformed
 
     private void btnAddMovieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMovieActionPerformed
-
+        
         if (formValid()) {
             try {
                 String localPicturePath = uploadPicture();
@@ -366,11 +366,11 @@ public class MoviePanel extends javax.swing.JPanel {
                         localPicturePath,
                         txtLink.getText().trim(),
                         txtStartDate.getText().trim());
-
+                
                 repository.createMovie(movie);
                 moviesTableModel.setMovies(repository.selectMovies());
                 clearForm();
-
+                
                 MessageUtils.showInformationMessage(MOVIE_ADDED, NEW_MOVIE_ADDED);
             } catch (Exception ex) {
                 Logger.getLogger(MoviePanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -380,12 +380,12 @@ public class MoviePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnAddMovieActionPerformed
 
     private void btnUpdateMovieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateMovieActionPerformed
-
+        
         if (selectedMovie == null) {
             MessageUtils.showInformationMessage(WRONG_OPERATION, CHOOSE_A_MOVIE);
             return;
         }
-
+        
         if (formValid()) {
             try {
                 if (selectedMovie.getPicturePath() == null
@@ -394,7 +394,7 @@ public class MoviePanel extends javax.swing.JPanel {
                     String localPicturePath = uploadPicture();
                     selectedMovie.setPicturePath(localPicturePath);
                 }
-
+                
                 selectedMovie.setTitle(txtTitle.getText().trim());
                 selectedMovie.setPublishedDate(LocalDateTime.parse(txtPublishedDate.getText().trim(), Movie.DATE_FORMATTER));
                 selectedMovie.setDescription(txtDescription.getText().trim());
@@ -402,12 +402,12 @@ public class MoviePanel extends javax.swing.JPanel {
                 selectedMovie.setLength(txtLength.getText().trim());
                 selectedMovie.setLink(txtLink.getText().trim());
                 selectedMovie.setStartDate(txtStartDate.getText().trim());
-
+                
                 repository.updateMovie(selectedMovie.getId(), selectedMovie);
                 moviesTableModel.setMovies(repository.selectMovies());
-
+                
                 clearForm();
-
+                
                 MessageUtils.showInformationMessage(MOVIE_UPDATED_TITLE, MOVIE_UPDATED);
             } catch (Exception ex) {
                 Logger.getLogger(MoviePanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -417,7 +417,7 @@ public class MoviePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnUpdateMovieActionPerformed
 
     private void btnDeleteMovieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteMovieActionPerformed
-
+        
         if (selectedMovie == null) {
             MessageUtils.showInformationMessage(WRONG_OPERATION, CHOOSE_A_MOVIE);
             return;
@@ -425,9 +425,10 @@ public class MoviePanel extends javax.swing.JPanel {
         if (MessageUtils.showConfirmDialog(DELETE_MOVIE_TITLE, CONFIRM_MOVIE_DELETION) == JOptionPane.YES_OPTION) {
             try {
                 Files.deleteIfExists(Paths.get(selectedMovie.getPicturePath()));
+                
                 repository.deleteMovie(selectedMovie.getId());
                 moviesTableModel.setMovies(repository.selectMovies());
-
+                
                 clearForm();
             } catch (Exception ex) {
                 Logger.getLogger(MoviePanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -478,7 +479,7 @@ public class MoviePanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void init() {
-
+        
         try {
             initValidation();
             initRepository();
@@ -489,41 +490,41 @@ public class MoviePanel extends javax.swing.JPanel {
             System.exit(1);
         }
     }
-
+    
     private void initValidation() {
-
+        
         errorLabels = Arrays.asList(lblTitleError, lblPublishedDateError, lblDescriptionError, lblOriginalNameError,
                 lblLengthError, lblLinkError, lblStartDateError);
-
+        
         validationFields = Arrays.asList(txtTitle, txtPublishedDate, txtDescription, txtOriginalName,
                 txtLength, txtLink, txtStartDate);
     }
-
+    
     private void initRepository() throws Exception {
-
+        
         repository = RepositoryFactory.getRepository();
     }
-
+    
     private void initTable() throws Exception {
-
+        
         tbMovies.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tbMovies.setAutoCreateRowSorter(true);
         tbMovies.setRowHeight(25);
         moviesTableModel = new MovieTableModel(repository.selectMovies());
         tbMovies.setModel(moviesTableModel);
     }
-
+    
     private boolean formValid() {
-
+        
         boolean formOk = true;
-
+        
         for (int i = 0; i < validationFields.size(); i++) {
             formOk &= !validationFields
                     .get(i)
                     .getText()
                     .trim()
                     .isEmpty();
-
+            
             errorLabels
                     .get(i)
                     .setText(validationFields
@@ -531,37 +532,37 @@ public class MoviePanel extends javax.swing.JPanel {
                             .getText()
                             .trim()
                             .isEmpty() ? "X" : "");
-
+            
             if (MOVIE_PUBLISHED_DATE.equals(validationFields.get(i).getName())) {
                 try {
                     LocalDateTime.parse(validationFields
                             .get(i)
                             .getText()
                             .trim(), Movie.DATE_FORMATTER);
-
+                    
                     errorLabels
                             .get(i)
                             .setText("");
                 } catch (Exception ex) {
                     formOk = false;
-
+                    
                     errorLabels
                             .get(i)
                             .setText("X");
                 }
             }
         }
-
+        
         return formOk;
     }
-
+    
     private void showMovie() {
-
+        
         clearForm();
         int selectedRow = tbMovies.getSelectedRow();
         int rowIndex = tbMovies.convertRowIndexToModel(selectedRow);
         int selectedMovieId = (int) moviesTableModel.getValueAt(rowIndex, 0);
-
+        
         try {
             Optional<Movie> optionalMovie = repository.selectMovie(selectedMovieId);
             if (optionalMovie.isPresent()) {
@@ -573,18 +574,18 @@ public class MoviePanel extends javax.swing.JPanel {
             MessageUtils.showErrorMessage(ERROR, SHOW_MOVIE_ERROR);
         }
     }
-
+    
     private void clearForm() {
-
+        
         validationFields.forEach(e -> e.setText(""));
         errorLabels.forEach(e -> e.setText(""));
-
+        
         selectedMovie = null;
         lblPoster.setIcon(new ImageIcon(getClass().getResource(IMAGE_PATH)));
     }
-
+    
     private String uploadPicture() throws IOException {
-
+        
         String picturePath = txtPicturePath.getText().trim();
         String ext = picturePath.substring(picturePath.lastIndexOf("."));
         String pictureName = Math.abs(RANDOM.nextInt()) + ext;
@@ -592,17 +593,17 @@ public class MoviePanel extends javax.swing.JPanel {
         FileUtils.copy(picturePath, localPicturePath);
         return localPicturePath;
     }
-
+    
     private void fillForm(Movie movie) {
-
+        
         if (movie.getPicturePath() != null && Files.exists(Paths.get(movie.getPicturePath()))) {
             txtPicturePath.setText(movie.getPicturePath());
-            // setIcon(lblPoster, new File(movie.getPicturePath()));
+            setIcon(lblPoster, new File(movie.getPicturePath()));
         } else {
             txtPicturePath.setText("");
             lblPoster.setIcon(new ImageIcon(getClass().getResource(IMAGE_PATH)));
         }
-
+        
         txtTitle.setText(movie.getTitle());
         txtPublishedDate.setText(movie.getPublishedDate().format(Movie.DATE_FORMATTER));
         txtDescription.setText(movie.getDescription());
@@ -611,12 +612,15 @@ public class MoviePanel extends javax.swing.JPanel {
         txtLink.setText(movie.getLink());
         txtStartDate.setText(movie.getStartDate());
     }
-
+    
     private void setIcon(JLabel label, File file) {
-
+        
         try {
-            label.setIcon(IconUtils.createIcon(file.getAbsolutePath(), label.getWidth(), label.getHeight()));
-        } catch (IOException ex) {
+            Optional<ImageIcon> icon = IconUtils.createIcon(file.getAbsolutePath(), label.getWidth(), label.getHeight());
+            if (icon.isPresent()) {
+                label.setIcon(icon.get());
+            }
+        } catch (IOException | NullPointerException ex) {
             Logger.getLogger(MoviePanel.class.getName()).log(Level.SEVERE, null, ex);
             MessageUtils.showErrorMessage(ERROR, SET_ICON_ERROR);
         }

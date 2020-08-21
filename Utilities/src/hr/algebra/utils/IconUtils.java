@@ -6,17 +6,19 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 public class IconUtils {
 
-    public static ImageIcon createIcon(String path, int width, int height) throws IOException {
+    public static Optional<ImageIcon> createIcon(String path, int width, int height) throws IOException {
 
-        System.out.println(path);
         BufferedImage bufferedImage = ImageIO.read(new File(path));
-        System.out.println(bufferedImage);
-        Image image = bufferedImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        System.out.println(image);
-        return new ImageIcon(image);
-    }
 
+        if (bufferedImage != null) {
+            Image image = bufferedImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+            return Optional.of(new ImageIcon(image));
+        }
+
+        return Optional.empty();
+    }
 }

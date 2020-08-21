@@ -65,12 +65,13 @@ public class MovieParser {
                                 break;
                             case TITLE:
                                 if (movie != null && !data.isEmpty()) {
-                                    movie.setTitle(data);
+                                    movie.setTitle(StringUtils.EscapeHtmlTags(data));
                                 }
                                 break;
                             case PUB_DATE:
                                 if (movie != null && !data.isEmpty()) {
-                                    LocalDateTime publishedDate = LocalDateTime.parse(data, DATE_FORMATTER);
+                                    LocalDateTime publishedDate = LocalDateTime
+                                            .parse(StringUtils.EscapeHtmlTags(data), DATE_FORMATTER);
                                     movie.setPublishedDate(publishedDate);
                                 }
                                 break;
@@ -81,42 +82,42 @@ public class MovieParser {
                                 break;
                             case ORIGINAL_NAME:
                                 if (movie != null && !data.isEmpty()) {
-                                    movie.setOriginalName(data);
+                                    movie.setOriginalName(StringUtils.EscapeHtmlTags(data));
                                 }
                                 break;
                             case DIRECTOR:
                                 if (movie != null && !data.isEmpty()) {
-                                    movie.setDirectors(data);
+                                    movie.setDirectors(StringUtils.EscapeHtmlTags(data));
                                 }
                                 break;
                             case ACTOR:
                                 if (movie != null && !data.isEmpty()) {
-                                    movie.setActors(data);
+                                    movie.setActors(StringUtils.EscapeHtmlTags(data));
                                 }
                                 break;
                             case LENGTH:
                                 if (movie != null && !data.isEmpty()) {
-                                    movie.setLength(data);
+                                    movie.setLength(StringUtils.EscapeHtmlTags(data));
                                 }
                                 break;
                             case GENRE:
                                 if (movie != null && !data.isEmpty()) {
-                                    movie.setGenre(data);
+                                    movie.setGenre(StringUtils.EscapeHtmlTags(data));
                                 }
                                 break;
                             case POSTER:
                                 if (movie != null && !data.isEmpty()) {
-                                    handlePicture(movie, data);
+                                    handlePicture(movie, StringUtils.EscapeHtmlTags(data));
                                 }
                                 break;
                             case LINK:
                                 if (movie != null && !data.isEmpty()) {
-                                    movie.setLink(data);
+                                    movie.setLink(StringUtils.EscapeHtmlTags(data));
                                 }
                                 break;
                             case START_DATE:
                                 if (movie != null && !data.isEmpty()) {
-                                    movie.setStartDate(data);
+                                    movie.setStartDate(StringUtils.EscapeHtmlTags(data));
                                 }
                                 break;
                             default:
