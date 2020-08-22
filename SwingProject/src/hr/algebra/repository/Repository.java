@@ -1,5 +1,6 @@
 package hr.algebra.repository;
 
+import hr.algebra.model.Actor;
 import hr.algebra.model.ApplicationUser;
 import hr.algebra.model.Movie;
 
@@ -28,4 +29,8 @@ public interface Repository {
     void updateMovie(int id, Movie movie) throws Exception;
 
     void deleteMovie(int id) throws Exception;
+
+    List<Movie> selectActorMovies(int id) throws Exception;
+
+    List<Actor> selectActors() throws Exception;
 }

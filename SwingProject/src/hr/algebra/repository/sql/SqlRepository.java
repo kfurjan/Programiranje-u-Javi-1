@@ -1,5 +1,6 @@
 package hr.algebra.repository.sql;
 
+import hr.algebra.model.Actor;
 import hr.algebra.model.ApplicationUser;
 import hr.algebra.model.Movie;
 import hr.algebra.model.UserType;
@@ -26,7 +27,7 @@ public class SqlRepository implements Repository {
     private static final String PASSWORD = "Password";
     private static final String USER_TYPE_ID = "ApplicationUserTypeID";
 
-    private static final String ID = "IDMovie";
+    private static final String ID_MOVIE = "IDMovie";
     private static final String TITLE = "Title";
     private static final String PUBLISHED_DATE = "PublishedDate";
     private static final String DESCRIPTION = "MovieDescription";
@@ -36,6 +37,10 @@ public class SqlRepository implements Repository {
     private static final String LINK = "Link";
     private static final String START_DATE = "StartDate";
 
+    private static final String ID_ACTOR = "IDActor";
+    private static final String FIRSTNAME = "Firstname";
+    private static final String LASTNAME = "Lastname";
+
     private static final String GET_APPLICATION_USER = "{ CALL GetApplicationUser (?,?) }";
     private static final String CREATE_NEW_USER = "{ CALL CreateNewUser (?,?) }";
     private static final String CREATE_MOVIES = "{ CALL CreateMovies (?,?,?,?,?,?,?,?,?,?,?) }";
@@ -44,6 +49,8 @@ public class SqlRepository implements Repository {
     private static final String DELETE_MOVIE = "{ CALL DeleteMovie (?) }";
     private static final String SELECT_MOVIES = "{ CALL selectMovies }";
     private static final String SELECT_MOVIE = "{ CALL selectMovie (?) }";
+    private static final String SELECT_ACTOR_MOVIES = "{ CALL SelectActorMovies (?) }";
+    private static final String SELECT_ACTORS = "{ CALL SelectActors }";
     private static final String CLEAR_MOVIES = "{ CALL clearMovies }";
 
     static <T, E extends Exception> Consumer<T> handlingConsumerWrapper(ThrowingConsumer<T, E> throwingConsumer, Class<E> exceptionClass) {
@@ -136,7 +143,7 @@ public class SqlRepository implements Repository {
 
             while (rs.next()) {
                 movies.add(new Movie(
-                        rs.getInt(ID),
+                        rs.getInt(ID_MOVIE),
                         rs.getString(TITLE),
                         LocalDateTime.parse(rs.getString(PUBLISHED_DATE), Movie.DATE_FORMATTER),
                         rs.getString(DESCRIPTION),
@@ -144,8 +151,7 @@ public class SqlRepository implements Repository {
                         rs.getString(LENGTH),
                         rs.getString(PICTURE_PATH),
                         rs.getString(LINK),
-                        rs.getString(START_DATE)
-                ));
+                        rs.getString(START_DATE)));
             }
         }
 
@@ -228,7 +234,7 @@ public class SqlRepository implements Repository {
 
                 if (rs.next()) {
                     return Optional.of(new Movie(
-                            rs.getInt(ID),
+                            rs.getInt(ID_MOVIE),
                             rs.getString(TITLE),
                             LocalDateTime.parse(rs.getString(PUBLISHED_DATE), Movie.DATE_FORMATTER),
                             rs.getString(DESCRIPTION),
@@ -236,11 +242,62 @@ public class SqlRepository implements Repository {
                             rs.getString(LENGTH),
                             rs.getString(PICTURE_PATH),
                             rs.getString(LINK),
-                            rs.getString(START_DATE)
-                    ));
+                            rs.getString(START_DATE)));
                 }
             }
             return Optional.empty();
         }
+    }
+
+    @Override
+    public List<Movie> selectActorMovies(int id) throws Exception {
+
+        List<Movie> movies = new ArrayList<>();
+        DataSource dataSource = DataSourceSingleton.getInstance();
+
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(SELECT_ACTOR_MOVIES)) {
+
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    movies.add(new Movie(
+                            rs.getInt(ID_MOVIE),
+                            rs.getString(TITLE),
+                            LocalDateTime.parse(rs.getString(PUBLISHED_DATE), Movie.DATE_FORMATTER),
+                            rs.getString(DESCRIPTION),
+                            rs.getString(ORIGINAL_NAME),
+                            rs.getString(LENGTH),
+                            rs.getString(PICTURE_PATH),
+                            rs.getString(LINK),
+                            rs.getString(START_DATE)));
+                }
+            }
+        }
+
+        return movies;
+    }
+
+    @Override
+    public List<Actor> selectActors() throws Exception {
+
+        List<Actor> actors = new ArrayList<>();
+
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(SELECT_ACTORS);
+                ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                actors.add(new Actor(
+                        rs.getInt(ID_ACTOR),
+                        rs.getString(FIRSTNAME),
+                        rs.getString(LASTNAME),
+                        selectActorMovies(rs.getInt(ID_ACTOR))));
+            }
+        }
+
+        return actors;
     }
 }

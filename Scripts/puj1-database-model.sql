@@ -6,6 +6,13 @@ GO
 
 										/* CREATING TABLES */
 
+CREATE TABLE ApplicationUserType
+(
+	IDApplicationUserType		int	CONSTRAINT PK_ApplicationUserType PRIMARY KEY IDENTITY(1,1),
+	UserType					nvarchar(25)
+)
+GO
+
 CREATE TABLE ApplicationUser
 (
 	IDAplicationUser		int				CONSTRAINT PK_ApplicationUSER PRIMARY KEY IDENTITY(1,1),
@@ -13,13 +20,6 @@ CREATE TABLE ApplicationUser
 	Password				nvarchar(20)	NOT NULL,
 	ApplicationUserTypeID	int				CONSTRAINT FK_ApplicationUser_ApplicationUserType
 		FOREIGN KEY REFERENCES ApplicationUserType(IDApplicationUserType) NOT NULL
-)
-GO
-
-CREATE TABLE ApplicationUserType
-(
-	IDApplicationUserType		int	CONSTRAINT PK_ApplicationUserType PRIMARY KEY IDENTITY(1,1),
-	UserType					nvarchar(25)
 )
 GO
 
@@ -308,5 +308,39 @@ BEGIN
 		Movie
 	WHERE
 		IDMovie = @IDMovie
+END
+GO
+
+CREATE PROCEDURE SelectActors
+AS
+BEGIN
+	select 
+		a.IDActor,
+		TRIM(left(a.Fullname, charindex(' ', a.Fullname))) as Firstname,
+		TRIM(SUBSTRING(a.Fullname, LEN(left(a.Fullname, charindex(' ', a.Fullname))) + 1, 100)) as Lastname
+	from Actor as a
+END
+GO
+
+CREATE PROCEDURE SelectActorMovies
+	@IDActor int
+AS
+BEGIN
+	SELECT
+		m.IDMovie,
+		m.Title,
+		m.PublishedDate,
+		m.MovieDescription,
+		m.OriginalName,
+		m.MovieLength,
+		m.PicturePath,
+		m.Link,
+		m.StartDate
+	FROM Movie as m
+	inner join MovieActor as ma
+		on m.IDMovie = ma.MovieID
+	inner join Actor as a
+		on a.IDActor = ma.ActorID
+	WHERE a.IDActor = @IDActor
 END
 GO
