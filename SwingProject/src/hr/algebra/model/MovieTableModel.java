@@ -9,11 +9,11 @@ import javax.swing.table.AbstractTableModel;
  */
 public class MovieTableModel extends AbstractTableModel {
 
+    List<Movie> movies;
     private static final String[] COLUMN_NAMES
             = {"ID", "Title", "Published date", "Description", "Original name",
                 "Length", "Picture path", "Link", "Start date"};
 
-    List<Movie> movies;
 
     public MovieTableModel(List<Movie> movies) {
         this.movies = movies;

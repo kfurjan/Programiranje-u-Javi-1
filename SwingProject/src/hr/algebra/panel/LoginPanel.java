@@ -169,7 +169,7 @@ public class LoginPanel extends javax.swing.JPanel {
                             topFrame.getTpContent().add(ADMIN_PANEL, new AdminPanel());
                             break;
                         case User:
-                            topFrame.setSize(1200, 800);
+                            topFrame.setSize(1200, 850);
                             topFrame.getTpContent().remove(this);
                             topFrame.getTpContent().add(MOVIES, new MoviePanel());
                             topFrame.getTpContent().add(ACTORS, new ActorPanel());

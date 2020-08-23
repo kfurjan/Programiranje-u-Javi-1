@@ -33,4 +33,6 @@ public interface Repository {
     List<Movie> selectActorMovies(int id) throws Exception;
 
     List<Actor> selectActors() throws Exception;
+
+    Optional<Actor> selectActor(int id) throws Exception;
 }

@@ -344,3 +344,17 @@ BEGIN
 	WHERE a.IDActor = @IDActor
 END
 GO
+
+CREATE PROCEDURE selectActor
+	@IDMovie int
+AS
+BEGIN
+	SELECT
+		a.IDActor,
+		TRIM(left(a.Fullname, charindex(' ', a.Fullname))) as Firstname,
+		TRIM(SUBSTRING(a.Fullname, LEN(left(a.Fullname, charindex(' ', a.Fullname))) + 1, 100)) as Lastname
+	FROM Actor as a
+	WHERE
+		a.IDActor = @IDMovie
+END
+GO

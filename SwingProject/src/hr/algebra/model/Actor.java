@@ -7,7 +7,6 @@ import java.util.List;
  */
 public class Actor extends Person {
 
-    private int id;
     private List<Movie> movies;
 
     public Actor(String firstName, String lastName) {
@@ -15,22 +14,12 @@ public class Actor extends Person {
     }
 
     public Actor(int id, String firstName, String lastName) {
-        super(firstName, lastName);
-        this.id = id;
+        super(id, firstName, lastName);
     }
 
     public Actor(int id, String firstName, String lastName, List<Movie> movies) {
-        super(firstName, lastName);
-        this.id = id;
+        super(id, firstName, lastName);
         this.movies = movies;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public List<Movie> getMovies() {
@@ -43,6 +32,6 @@ public class Actor extends Person {
 
     @Override
     public String toString() {
-        return "Actor{" + "id=" + id + ", movies=" + movies + '}';
+        return super.getFirstName() + super.getLastName();
     }
 }

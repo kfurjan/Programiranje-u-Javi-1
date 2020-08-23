@@ -51,6 +51,7 @@ public class SqlRepository implements Repository {
     private static final String SELECT_MOVIE = "{ CALL selectMovie (?) }";
     private static final String SELECT_ACTOR_MOVIES = "{ CALL SelectActorMovies (?) }";
     private static final String SELECT_ACTORS = "{ CALL SelectActors }";
+    private static final String SELECT_ACTOR = "{ CALL SelectActor (?) }";
     private static final String CLEAR_MOVIES = "{ CALL clearMovies }";
 
     static <T, E extends Exception> Consumer<T> handlingConsumerWrapper(ThrowingConsumer<T, E> throwingConsumer, Class<E> exceptionClass) {
@@ -299,5 +300,27 @@ public class SqlRepository implements Repository {
         }
 
         return actors;
+    }
+
+    @Override
+    public Optional<Actor> selectActor(int id) throws Exception {
+
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(SELECT_ACTOR)) {
+
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+
+                if (rs.next()) {
+                    return Optional.of(new Actor(
+                            rs.getInt(ID_ACTOR),
+                            rs.getString(FIRSTNAME),
+                            rs.getString(LASTNAME),
+                            selectActorMovies(rs.getInt(ID_ACTOR))));
+                }
+            }
+            return Optional.empty();
+        }
     }
 }

@@ -1,16 +1,52 @@
 package hr.algebra.panel;
 
+import hr.algebra.model.Actor;
+import hr.algebra.model.ActorTableModel;
+import hr.algebra.model.Movie;
+import hr.algebra.repository.Repository;
+import hr.algebra.repository.RepositoryFactory;
+import hr.algebra.utils.MessageUtils;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.ListSelectionModel;
+import javax.swing.text.JTextComponent;
+
 /**
  *
  * @author Kevin Furjan
  */
 public class ActorPanel extends javax.swing.JPanel {
 
+    Repository repository;
+    Actor selectedActor;
+    ActorTableModel actorsTableModel;
+
+    private List<JLabel> errorLabels;
+    private List<JTextComponent> validationFields;
+    private DefaultListModel<Movie> allMoviesModel;
+    private DefaultListModel<Movie> actorMoviesModel;
+
+    private static final String ERROR = "Error";
+    private static final String DELETE_ERROR = "Unable to delete movie!";
+    private static final String NEW_MOVIE_ERROR = "Unable to create new movie!";
+    private static final String SET_ICON_ERROR = "Unable to set icon!";
+    private static final String SHOW_MOVIE_ERROR = "Unable to show movie!";
+    private static final String UPDATE_MOVIE_ERROR = "Unable to update movie!";
+    private static final String UNRECOVERABLE_ERROR = "Unrecoverable error";
+    private static final String CANNOT_INITIATE_THE_FORM = "Cannot initiate the form";
+
     /**
      * Creates new form ActorPanel
      */
     public ActorPanel() {
         initComponents();
+        init();
     }
 
     /**
@@ -23,9 +59,24 @@ public class ActorPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tbActors = new javax.swing.JTable();
+        lblFirstname = new javax.swing.JLabel();
+        txtFirstname = new javax.swing.JTextField();
+        lblFirstnameError = new javax.swing.JLabel();
+        lblFirstname1 = new javax.swing.JLabel();
+        txtLastname = new javax.swing.JTextField();
+        lblLastnameError = new javax.swing.JLabel();
+        btnAddActor = new javax.swing.JButton();
+        btnUpdateActor = new javax.swing.JButton();
+        btnDeleteActor = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        lsActorMovies = new javax.swing.JList<>();
+        btnRemoveMovie = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        lsAllMovies = new javax.swing.JList<>();
+        btnAddActorMovies = new javax.swing.JButton();
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tbActors.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -36,7 +87,65 @@ public class ActorPanel extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        tbActors.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbActorsMouseClicked(evt);
+            }
+        });
+        tbActors.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tbActorsKeyReleased(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tbActors);
+
+        lblFirstname.setText("Firstname");
+
+        lblFirstnameError.setForeground(new java.awt.Color(255, 0, 0));
+
+        lblFirstname1.setText("Lastname");
+
+        lblLastnameError.setForeground(new java.awt.Color(255, 0, 0));
+
+        btnAddActor.setText("Create");
+        btnAddActor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActorActionPerformed(evt);
+            }
+        });
+
+        btnUpdateActor.setText("Update");
+        btnUpdateActor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActorActionPerformed(evt);
+            }
+        });
+
+        btnDeleteActor.setBackground(new java.awt.Color(255, 0, 0));
+        btnDeleteActor.setText("Delete");
+        btnDeleteActor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActorActionPerformed(evt);
+            }
+        });
+
+        jScrollPane3.setViewportView(lsActorMovies);
+
+        btnRemoveMovie.setText("Remove");
+        btnRemoveMovie.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveMovieActionPerformed(evt);
+            }
+        });
+
+        jScrollPane4.setViewportView(lsAllMovies);
+
+        btnAddActorMovies.setText("Add");
+        btnAddActorMovies.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActorMoviesActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -46,19 +155,228 @@ public class ActorPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1138, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(36, 36, 36)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblFirstname1)
+                    .addComponent(lblFirstname)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(txtFirstname, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblFirstnameError))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(btnDeleteActor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtLastname, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(btnAddActor)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnUpdateActor)))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblLastnameError)
+                                .addGap(310, 310, 310)
+                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btnRemoveMovie, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(344, 344, 344))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btnAddActorMovies, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(339, 339, 339))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(515, Short.MAX_VALUE)
+                .addGap(38, 38, 38)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblFirstname)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtFirstname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblFirstnameError))
+                        .addGap(42, 42, 42)
+                        .addComponent(lblFirstname1)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtLastname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblLastnameError)))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(5, 5, 5)
+                .addComponent(btnAddActorMovies)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnAddActor)
+                            .addComponent(btnUpdateActor))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnDeleteActor))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnRemoveMovie)))
+                .addGap(108, 108, 108)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnAddActorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAddActorActionPerformed
+
+    private void btnUpdateActorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnUpdateActorActionPerformed
+
+    private void btnDeleteActorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnDeleteActorActionPerformed
+
+    private void btnAddActorMoviesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActorMoviesActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAddActorMoviesActionPerformed
+
+    private void btnRemoveMovieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveMovieActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnRemoveMovieActionPerformed
+
+    private void tbActorsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbActorsMouseClicked
+        showActor();
+    }//GEN-LAST:event_tbActorsMouseClicked
+
+    private void tbActorsKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbActorsKeyReleased
+        showActor();
+    }//GEN-LAST:event_tbActorsKeyReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddActor;
+    private javax.swing.JButton btnAddActorMovies;
+    private javax.swing.JButton btnDeleteActor;
+    private javax.swing.JButton btnRemoveMovie;
+    private javax.swing.JButton btnUpdateActor;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JLabel lblFirstname;
+    private javax.swing.JLabel lblFirstname1;
+    private javax.swing.JLabel lblFirstnameError;
+    private javax.swing.JLabel lblLastnameError;
+    private javax.swing.JList<Movie> lsActorMovies;
+    private javax.swing.JList<Movie> lsAllMovies;
+    private javax.swing.JTable tbActors;
+    private javax.swing.JTextField txtFirstname;
+    private javax.swing.JTextField txtLastname;
     // End of variables declaration//GEN-END:variables
+
+    private void init() {
+
+        try {
+            initValidation();
+            initRepository();
+            initTable();
+            initMoviesModel();
+        } catch (Exception ex) {
+            Logger.getLogger(ActorPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage(UNRECOVERABLE_ERROR, CANNOT_INITIATE_THE_FORM);
+            System.exit(1);
+        }
+    }
+
+    private void initValidation() {
+
+        errorLabels = Arrays.asList(lblFirstnameError, lblLastnameError);
+        validationFields = Arrays.asList(txtFirstname, txtLastname);
+    }
+
+    private void initRepository() throws Exception {
+        repository = RepositoryFactory.getRepository();
+    }
+
+    private void initTable() throws Exception {
+
+        tbActors.setRowHeight(25);
+        tbActors.setAutoCreateRowSorter(true);
+        tbActors.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        actorsTableModel = new ActorTableModel(repository.selectActors());
+        tbActors.setModel(actorsTableModel);
+    }
+
+    private void initMoviesModel() {
+
+        allMoviesModel = new DefaultListModel<>();
+        actorMoviesModel = new DefaultListModel<>();
+    }
+
+    private boolean formValid() {
+
+        boolean formOk = true;
+
+        for (int i = 0; i < validationFields.size(); i++) {
+            formOk &= !validationFields
+                    .get(i)
+                    .getText()
+                    .trim()
+                    .isEmpty();
+
+            errorLabels
+                    .get(i)
+                    .setText(validationFields
+                            .get(i)
+                            .getText()
+                            .trim()
+                            .isEmpty() ? "X" : "");
+        }
+
+        return formOk;
+    }
+
+    private void showActor() {
+
+        clearForm();
+        int selectedRow = tbActors.getSelectedRow();
+        int rowIndex = tbActors.convertRowIndexToModel(selectedRow);
+        int selectedActorId = (int) actorsTableModel.getValueAt(rowIndex, 0);
+
+        try {
+            Optional<Actor> optionalActor = repository.selectActor(selectedActorId);
+            if (optionalActor.isPresent()) {
+                selectedActor = optionalActor.get();
+                fillForm(selectedActor);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(ActorPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage(ERROR, SHOW_MOVIE_ERROR);
+        }
+    }
+
+    private void clearForm() {
+
+        validationFields.forEach(e -> e.setText(""));
+        errorLabels.forEach(e -> e.setText(""));
+        selectedActor = null;
+    }
+
+    private void fillForm(Actor actor) throws Exception {
+
+        txtFirstname.setText(actor.getFirstName());
+        txtLastname.setText(actor.getLastName());
+        loadModel(repository.selectMovies(), allMoviesModel, lsAllMovies);
+        loadModel(repository.selectActorMovies(selectedActor.getId()), actorMoviesModel, lsActorMovies);
+    }
+
+    private void loadModel(List<Movie> movies, DefaultListModel<Movie> moviesModel, JList<Movie> moviesList) throws Exception {
+
+        moviesModel.clear();
+        movies.forEach(movie -> moviesModel.addElement(movie));
+        moviesList.setModel(moviesModel);
+    }
 }
