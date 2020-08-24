@@ -35,4 +35,14 @@ public interface Repository {
     List<Actor> selectActors() throws Exception;
 
     Optional<Actor> selectActor(int id) throws Exception;
+
+    void createActor(Actor actor) throws Exception;
+
+    void updateActor(int id, Actor actor) throws Exception;
+
+    void deleteActor(int id) throws Exception;
+
+    void addMovieToActor(int idMovie, int idActor) throws Exception;
+
+    void removeMovieFromActor(int idMovie, int idActor) throws Exception;
 }

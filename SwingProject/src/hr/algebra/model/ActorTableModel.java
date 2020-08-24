@@ -1,6 +1,7 @@
 package hr.algebra.model;
 
 import java.util.List;
+import java.util.Optional;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -48,11 +49,12 @@ public class ActorTableModel extends AbstractTableModel {
             case 2:
                 return actors.get(rowIndex).getLastName();
             case 3:
-                return actors.get(rowIndex).getMovies()
+                Optional<String> actorMovies = actors.get(rowIndex).getMovies()
                         .stream()
                         .map(Movie::getTitle)
-                        .reduce((partial, title) -> partial + DELIMITER + title)
-                        .get();
+                        .reduce((partial, title) -> partial + DELIMITER + title);
+
+                return actorMovies.isPresent() ? actorMovies.get() : "";
             default:
                 throw new RuntimeException("No such column");
         }

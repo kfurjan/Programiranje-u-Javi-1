@@ -358,3 +358,61 @@ BEGIN
 		a.IDActor = @IDMovie
 END
 GO
+
+CREATE PROCEDURE CreateActor
+	@Firstname nvarchar(50),
+	@Lastname nvarchar(50)
+AS
+BEGIN
+	INSERT INTO Actor (Fullname) VALUES
+		(@Firstname + ' ' + @Lastname)
+END
+GO
+
+CREATE PROCEDURE UpdateActor
+	@IDActor int,
+	@Firstname nvarchar(50),
+	@Lastname nvarchar(50)
+AS
+BEGIN
+	UPDATE 
+		Actor
+	SET
+		Fullname = @Firstname + ' ' + @Lastname
+	WHERE
+		IDActor = @IDActor
+END
+GO
+
+CREATE PROCEDURE DeleteActor
+	@IDActor int
+AS
+BEGIN
+	DELETE FROM MovieActor
+		WHERE ActorID = @IDActor
+
+	DELETE FROM Actor
+		WHERE IDActor = @IDActor
+END
+GO
+
+CREATE PROCEDURE CreateMovieActor
+	@IDMovie int,
+	@IDActor int
+AS
+BEGIN
+	INSERT INTO MovieActor (MovieID, ActorID) VALUES
+		(@IDMovie, @IDActor)
+END
+GO
+
+CREATE PROCEDURE DeleteMovieActor
+	@IDMovie int,
+	@IDActor int
+AS
+BEGIN
+	DELETE FROM MovieActor
+		WHERE ActorID = @IDActor AND
+			  MovieID = @IDMovie
+END
+GO

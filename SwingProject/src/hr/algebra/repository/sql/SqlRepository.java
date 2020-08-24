@@ -45,14 +45,19 @@ public class SqlRepository implements Repository {
     private static final String CREATE_NEW_USER = "{ CALL CreateNewUser (?,?) }";
     private static final String CREATE_MOVIES = "{ CALL CreateMovies (?,?,?,?,?,?,?,?,?,?,?) }";
     private static final String CREATE_MOVIE = "{ CALL CreateMovie (?,?,?,?,?,?,?,?) }";
+    private static final String CREATE_ACTOR = "{ CALL CreateActor (?,?) }";
     private static final String UPDATE_MOVIE = "{ CALL UpdateMovie (?,?,?,?,?,?,?,?,?) }";
+    private static final String UPDATE_ACTOR = "{ CALL UpdateActor (?,?,?) }";
     private static final String DELETE_MOVIE = "{ CALL DeleteMovie (?) }";
+    private static final String DELETE_ACTOR = "{ CALL DeleteActor (?) }";
     private static final String SELECT_MOVIES = "{ CALL selectMovies }";
     private static final String SELECT_MOVIE = "{ CALL selectMovie (?) }";
     private static final String SELECT_ACTOR_MOVIES = "{ CALL SelectActorMovies (?) }";
     private static final String SELECT_ACTORS = "{ CALL SelectActors }";
     private static final String SELECT_ACTOR = "{ CALL SelectActor (?) }";
     private static final String CLEAR_MOVIES = "{ CALL clearMovies }";
+    private static final String ADD_MOVIE_TO_ACTOR = "{ CALL CreateMovieActor (?,?) }";
+    private static final String REMOVE_MOVIE_FROM_ACTOR = "{ CALL DeleteMovieActor (?,?) }";
 
     static <T, E extends Exception> Consumer<T> handlingConsumerWrapper(ThrowingConsumer<T, E> throwingConsumer, Class<E> exceptionClass) {
 
@@ -321,6 +326,73 @@ public class SqlRepository implements Repository {
                 }
             }
             return Optional.empty();
+        }
+    }
+
+    @Override
+    public void createActor(Actor actor) throws Exception {
+
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(CREATE_ACTOR)) {
+
+            stmt.setString(1, actor.getFirstName());
+            stmt.setString(2, actor.getLastName());
+
+            stmt.executeUpdate();
+        }
+    }
+
+    @Override
+    public void updateActor(int id, Actor actor) throws Exception {
+
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(UPDATE_ACTOR)) {
+
+            stmt.setInt(1, id);
+            stmt.setString(2, actor.getFirstName());
+            stmt.setString(3, actor.getLastName());
+
+            stmt.executeUpdate();
+        }
+    }
+
+    @Override
+    public void deleteActor(int id) throws Exception {
+
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(DELETE_ACTOR)) {
+
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        }
+    }
+
+    @Override
+    public void addMovieToActor(int idMovie, int idActor) throws Exception {
+
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(ADD_MOVIE_TO_ACTOR)) {
+
+            stmt.setInt(1, idMovie);
+            stmt.setInt(2, idActor);
+            stmt.executeUpdate();
+        }
+    }
+
+    @Override
+    public void removeMovieFromActor(int idMovie, int idActor) throws Exception {
+
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(REMOVE_MOVIE_FROM_ACTOR)) {
+
+            stmt.setInt(1, idMovie);
+            stmt.setInt(2, idActor);
+            stmt.executeUpdate();
         }
     }
 }

@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.text.JTextComponent;
 
@@ -32,12 +33,23 @@ public class ActorPanel extends javax.swing.JPanel {
     private DefaultListModel<Movie> allMoviesModel;
     private DefaultListModel<Movie> actorMoviesModel;
 
+    private static final String ACTOR_ADDED = "Actor added";
+    private static final String ACTOR_UPDATED = "Actor has been updated!";
+    private static final String CHOOSE_AN_ACTOR = "Please choose an actor to update";
+    private static final String CHOOSE_ACTOR_MOVIE = "Please choose a movie and an actor";
+    private static final String WRONG_OPERATION = "Wrong operation";
+    private static final String NEW_ACTOR_ADDED = "New actor has been successfully added";
+    private static final String DELETE_ACTOR_TITLE = "Delete actor";
+    private static final String ACTOR_UPDATED_TITLE = "Actor updated";
+    private static final String CONFIRM_ACTOR_DELETION = "Do you really want to delete this actor?";
+
     private static final String ERROR = "Error";
-    private static final String DELETE_ERROR = "Unable to delete movie!";
-    private static final String NEW_MOVIE_ERROR = "Unable to create new movie!";
-    private static final String SET_ICON_ERROR = "Unable to set icon!";
-    private static final String SHOW_MOVIE_ERROR = "Unable to show movie!";
-    private static final String UPDATE_MOVIE_ERROR = "Unable to update movie!";
+    private static final String DELETE_ERROR = "Unable to delete actor!";
+    private static final String ADD_ERROR = "Unable to add this movie to actor!";
+    private static final String REMOVE_ERROR = "Unable to remove this movie from actor!";
+    private static final String NEW_ACTOR_ERROR = "Unable to create new actor!";
+    private static final String SHOW_ACTOR_ERROR = "Unable to show this actor!";
+    private static final String UPDATE_ACTOR_ERROR = "Unable to update this actor!";
     private static final String UNRECOVERABLE_ERROR = "Unrecoverable error";
     private static final String CANNOT_INITIATE_THE_FORM = "Cannot initiate the form";
 
@@ -229,23 +241,99 @@ public class ActorPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActorActionPerformed
-        // TODO add your handling code here:
+
+        if (formValid()) {
+            try {
+                Actor actor = new Actor(txtFirstname.getText().trim(), txtLastname.getText().trim());
+
+                repository.createActor(actor);
+                actorsTableModel.setActors(repository.selectActors());
+
+                clearForm();
+                MessageUtils.showInformationMessage(ACTOR_ADDED, NEW_ACTOR_ADDED);
+            } catch (Exception ex) {
+                Logger.getLogger(ActorPanel.class.getName()).log(Level.SEVERE, null, ex);
+                MessageUtils.showErrorMessage(ERROR, NEW_ACTOR_ERROR);
+            }
+        }
     }//GEN-LAST:event_btnAddActorActionPerformed
 
     private void btnUpdateActorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActorActionPerformed
-        // TODO add your handling code here:
+
+        if (selectedActor == null) {
+            MessageUtils.showInformationMessage(WRONG_OPERATION, CHOOSE_AN_ACTOR);
+            return;
+        }
+
+        if (formValid()) {
+
+            try {
+                selectedActor.setFirstName(txtFirstname.getText().trim());
+                selectedActor.setLastName(txtLastname.getText().trim());
+
+                repository.updateActor(selectedActor.getId(), selectedActor);
+                actorsTableModel.setActors(repository.selectActors());
+
+                clearForm();
+                MessageUtils.showInformationMessage(ACTOR_UPDATED_TITLE, ACTOR_UPDATED);
+
+            } catch (Exception ex) {
+                Logger.getLogger(ActorPanel.class.getName()).log(Level.SEVERE, null, ex);
+                MessageUtils.showErrorMessage(ERROR, UPDATE_ACTOR_ERROR);
+            }
+        }
     }//GEN-LAST:event_btnUpdateActorActionPerformed
 
     private void btnDeleteActorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActorActionPerformed
-        // TODO add your handling code here:
+
+        if (selectedActor == null) {
+            MessageUtils.showInformationMessage(WRONG_OPERATION, CHOOSE_AN_ACTOR);
+            return;
+        }
+        if (MessageUtils.showConfirmDialog(DELETE_ACTOR_TITLE, CONFIRM_ACTOR_DELETION) == JOptionPane.YES_OPTION) {
+            try {
+                repository.deleteActor(selectedActor.getId());
+                actorsTableModel.setActors(repository.selectActors());
+                clearForm();
+            } catch (Exception ex) {
+                Logger.getLogger(ActorPanel.class.getName()).log(Level.SEVERE, null, ex);
+                MessageUtils.showErrorMessage(ERROR, DELETE_ERROR);
+            }
+        }
     }//GEN-LAST:event_btnDeleteActorActionPerformed
 
     private void btnAddActorMoviesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActorMoviesActionPerformed
-        // TODO add your handling code here:
+
+        if (lsAllMovies.getSelectedValue() == null || selectedActor == null) {
+            MessageUtils.showInformationMessage(WRONG_OPERATION, CHOOSE_ACTOR_MOVIE);
+            return;
+        }
+
+        try {
+            repository.addMovieToActor(lsAllMovies.getSelectedValue().getId(), selectedActor.getId());
+            actorsTableModel.setActors(repository.selectActors());
+            clearForm();
+        } catch (Exception ex) {
+            Logger.getLogger(ActorPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage(ERROR, ADD_ERROR);
+        }
     }//GEN-LAST:event_btnAddActorMoviesActionPerformed
 
     private void btnRemoveMovieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveMovieActionPerformed
-        // TODO add your handling code here:
+
+        if (lsActorMovies.getSelectedValue() == null || selectedActor == null) {
+            MessageUtils.showInformationMessage(WRONG_OPERATION, CHOOSE_ACTOR_MOVIE);
+            return;
+        }
+
+        try {
+            repository.removeMovieFromActor(lsActorMovies.getSelectedValue().getId(), selectedActor.getId());
+            actorsTableModel.setActors(repository.selectActors());
+            clearForm();
+        } catch (Exception ex) {
+            Logger.getLogger(ActorPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage(ERROR, REMOVE_ERROR);
+        }
     }//GEN-LAST:event_btnRemoveMovieActionPerformed
 
     private void tbActorsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbActorsMouseClicked
@@ -354,7 +442,7 @@ public class ActorPanel extends javax.swing.JPanel {
             }
         } catch (Exception ex) {
             Logger.getLogger(ActorPanel.class.getName()).log(Level.SEVERE, null, ex);
-            MessageUtils.showErrorMessage(ERROR, SHOW_MOVIE_ERROR);
+            MessageUtils.showErrorMessage(ERROR, SHOW_ACTOR_ERROR);
         }
     }
 
@@ -363,6 +451,12 @@ public class ActorPanel extends javax.swing.JPanel {
         validationFields.forEach(e -> e.setText(""));
         errorLabels.forEach(e -> e.setText(""));
         selectedActor = null;
+
+        allMoviesModel.clear();
+        lsAllMovies.setModel(allMoviesModel);
+
+        actorMoviesModel.clear();
+        lsActorMovies.setModel(actorMoviesModel);
     }
 
     private void fillForm(Actor actor) throws Exception {
