@@ -1,16 +1,64 @@
 package hr.algebra.panel;
 
+import hr.algebra.model.Director;
+import hr.algebra.model.DirectorTableModel;
+import hr.algebra.model.Movie;
+import hr.algebra.repository.Repository;
+import hr.algebra.repository.RepositoryFactory;
+import hr.algebra.utils.MessageUtils;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.text.JTextComponent;
+
 /**
  *
  * @author Kevin Furjan
  */
 public class DirectorPanel extends javax.swing.JPanel {
 
+    Repository repository;
+    Director selectedDirector;
+    DirectorTableModel directorsTableModel;
+
+    private List<JLabel> errorLabels;
+    private List<JTextComponent> validationFields;
+    private DefaultListModel<Movie> allMoviesModel;
+    private DefaultListModel<Movie> directorMoviesModel;
+
+    private static final String DIRECTOR_ADDED = "Director added";
+    private static final String DIRECTOR_UPDATED = "Director has been updated!";
+    private static final String CHOOSE_DIRECTOR = "Please choose director to update";
+    private static final String CHOOSE_DIRECTOR_MOVIE = "Please choose a movie and director";
+    private static final String WRONG_OPERATION = "Wrong operation";
+    private static final String NEW_DIRECTOR_ADDED = "New director has been successfully added";
+    private static final String DELETE_DIRECTOR_TITLE = "Delete director";
+    private static final String DIRECTOR_UPDATED_TITLE = "Director updated";
+    private static final String CONFIRM_DIRECTOR_DELETION = "Do you really want to delete this director?";
+
+    private static final String ERROR = "Error";
+    private static final String DELETE_ERROR = "Unable to delete director!";
+    private static final String ADD_ERROR = "Unable to add this movie to director!";
+    private static final String REMOVE_ERROR = "Unable to remove this movie from director!";
+    private static final String NEW_DIRECTOR_ERROR = "Unable to create new director!";
+    private static final String SHOW_DIRECTOR_ERROR = "Unable to show this director!";
+    private static final String UPDATE_DIRECTOR_ERROR = "Unable to update this director!";
+    private static final String UNRECOVERABLE_ERROR = "Unrecoverable error";
+    private static final String CANNOT_INITIATE_THE_FORM = "Cannot initiate the form";
+
     /**
      * Creates new form DirectorPanel
      */
     public DirectorPanel() {
         initComponents();
+        init();
     }
 
     /**
@@ -23,9 +71,24 @@ public class DirectorPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tbDirectors = new javax.swing.JTable();
+        btnUpdateDirector = new javax.swing.JButton();
+        btnDeleteDirector = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        lsDirectorMovies = new javax.swing.JList<>();
+        btnRemoveMovie = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        lsAllMovies = new javax.swing.JList<>();
+        btnAddDirectorMovies = new javax.swing.JButton();
+        lblFirstname = new javax.swing.JLabel();
+        txtFirstname = new javax.swing.JTextField();
+        lblLastname = new javax.swing.JLabel();
+        txtLastname = new javax.swing.JTextField();
+        btnAddDirector = new javax.swing.JButton();
+        lblFirstnameError = new javax.swing.JLabel();
+        lblLastnameError = new javax.swing.JLabel();
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tbDirectors.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -36,7 +99,65 @@ public class DirectorPanel extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        tbDirectors.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbDirectorsMouseClicked(evt);
+            }
+        });
+        tbDirectors.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tbDirectorsKeyReleased(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tbDirectors);
+
+        btnUpdateDirector.setText("Update");
+        btnUpdateDirector.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateDirectorActionPerformed(evt);
+            }
+        });
+
+        btnDeleteDirector.setBackground(new java.awt.Color(255, 0, 0));
+        btnDeleteDirector.setText("Delete");
+        btnDeleteDirector.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteDirectorActionPerformed(evt);
+            }
+        });
+
+        jScrollPane3.setViewportView(lsDirectorMovies);
+
+        btnRemoveMovie.setText("Remove");
+        btnRemoveMovie.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveMovieActionPerformed(evt);
+            }
+        });
+
+        jScrollPane4.setViewportView(lsAllMovies);
+
+        btnAddDirectorMovies.setText("Add");
+        btnAddDirectorMovies.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddDirectorMoviesActionPerformed(evt);
+            }
+        });
+
+        lblFirstname.setText("Firstname");
+
+        lblLastname.setText("Lastname");
+
+        btnAddDirector.setText("Create");
+        btnAddDirector.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddDirectorActionPerformed(evt);
+            }
+        });
+
+        lblFirstnameError.setForeground(new java.awt.Color(255, 0, 0));
+
+        lblLastnameError.setForeground(new java.awt.Color(255, 0, 0));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -46,19 +167,310 @@ public class DirectorPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1138, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(73, 73, 73)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblLastname)
+                    .addComponent(lblFirstname)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(txtFirstname, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblFirstnameError))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(btnDeleteDirector, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtLastname, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(btnAddDirector)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnUpdateDirector)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(328, 328, 328)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblLastnameError)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 685, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(btnRemoveMovie, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(203, 203, 203))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(btnAddDirectorMovies, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(198, 198, 198)))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(515, Short.MAX_VALUE)
+                .addGap(60, 60, 60)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblFirstname)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtFirstname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblFirstnameError))
+                        .addGap(42, 42, 42)
+                        .addComponent(lblLastname)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtLastname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblLastnameError)))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(5, 5, 5)
+                .addComponent(btnAddDirectorMovies)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnAddDirector)
+                            .addComponent(btnUpdateDirector))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnDeleteDirector))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnRemoveMovie)))
+                .addGap(86, 86, 86)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnUpdateDirectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateDirectorActionPerformed
+
+        if (selectedDirector == null) {
+            MessageUtils.showInformationMessage(WRONG_OPERATION, CHOOSE_DIRECTOR);
+            return;
+        }
+
+        if (formValid()) {
+
+            try {
+                selectedDirector.setFirstName(txtFirstname.getText().trim());
+                selectedDirector.setLastName(txtLastname.getText().trim());
+
+                repository.updateDirector(selectedDirector.getId(), selectedDirector);
+                directorsTableModel.setDirectors(repository.selectDirectors());
+
+                clearForm();
+                MessageUtils.showInformationMessage(DIRECTOR_UPDATED_TITLE, DIRECTOR_UPDATED);
+
+            } catch (Exception ex) {
+                Logger.getLogger(DirectorPanel.class.getName()).log(Level.SEVERE, null, ex);
+                MessageUtils.showErrorMessage(ERROR, UPDATE_DIRECTOR_ERROR);
+            }
+        }
+    }//GEN-LAST:event_btnUpdateDirectorActionPerformed
+
+    private void btnDeleteDirectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteDirectorActionPerformed
+
+        if (selectedDirector == null) {
+            MessageUtils.showInformationMessage(WRONG_OPERATION, CHOOSE_DIRECTOR);
+            return;
+        }
+        if (MessageUtils.showConfirmDialog(DELETE_DIRECTOR_TITLE, CONFIRM_DIRECTOR_DELETION) == JOptionPane.YES_OPTION) {
+            try {
+                repository.deleteDirector(selectedDirector.getId());
+                directorsTableModel.setDirectors(repository.selectDirectors());
+                clearForm();
+            } catch (Exception ex) {
+                Logger.getLogger(DirectorPanel.class.getName()).log(Level.SEVERE, null, ex);
+                MessageUtils.showErrorMessage(ERROR, DELETE_ERROR);
+            }
+        }
+    }//GEN-LAST:event_btnDeleteDirectorActionPerformed
+
+    private void btnRemoveMovieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveMovieActionPerformed
+
+        if (lsDirectorMovies.getSelectedValue() == null || selectedDirector == null) {
+            MessageUtils.showInformationMessage(WRONG_OPERATION, CHOOSE_DIRECTOR_MOVIE);
+            return;
+        }
+
+        try {
+            repository.removeMovieFromDirector(lsDirectorMovies.getSelectedValue().getId(), selectedDirector.getId());
+            directorsTableModel.setDirectors(repository.selectDirectors());
+            clearForm();
+        } catch (Exception ex) {
+            Logger.getLogger(DirectorPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage(ERROR, REMOVE_ERROR);
+        }
+    }//GEN-LAST:event_btnRemoveMovieActionPerformed
+
+    private void btnAddDirectorMoviesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDirectorMoviesActionPerformed
+
+        if (lsAllMovies.getSelectedValue() == null || selectedDirector == null) {
+            MessageUtils.showInformationMessage(WRONG_OPERATION, CHOOSE_DIRECTOR_MOVIE);
+            return;
+        }
+
+        try {
+            repository.addMovieToDirector(lsAllMovies.getSelectedValue().getId(), selectedDirector.getId());
+            directorsTableModel.setDirectors(repository.selectDirectors());
+            clearForm();
+        } catch (Exception ex) {
+            Logger.getLogger(DirectorPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage(ERROR, ADD_ERROR);
+        }
+    }//GEN-LAST:event_btnAddDirectorMoviesActionPerformed
+
+    private void btnAddDirectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDirectorActionPerformed
+
+        if (formValid()) {
+            try {
+                Director director = new Director(txtFirstname.getText().trim(), txtLastname.getText().trim());
+
+                repository.createDirector(director);
+                directorsTableModel.setDirectors(repository.selectDirectors());
+
+                clearForm();
+                MessageUtils.showInformationMessage(DIRECTOR_ADDED, NEW_DIRECTOR_ADDED);
+            } catch (Exception ex) {
+                Logger.getLogger(DirectorPanel.class.getName()).log(Level.SEVERE, null, ex);
+                MessageUtils.showErrorMessage(ERROR, NEW_DIRECTOR_ERROR);
+            }
+        }
+    }//GEN-LAST:event_btnAddDirectorActionPerformed
+
+    private void tbDirectorsKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbDirectorsKeyReleased
+        showDirector();
+    }//GEN-LAST:event_tbDirectorsKeyReleased
+
+    private void tbDirectorsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbDirectorsMouseClicked
+        showDirector();
+    }//GEN-LAST:event_tbDirectorsMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddDirector;
+    private javax.swing.JButton btnAddDirectorMovies;
+    private javax.swing.JButton btnDeleteDirector;
+    private javax.swing.JButton btnRemoveMovie;
+    private javax.swing.JButton btnUpdateDirector;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JLabel lblFirstname;
+    private javax.swing.JLabel lblFirstnameError;
+    private javax.swing.JLabel lblLastname;
+    private javax.swing.JLabel lblLastnameError;
+    private javax.swing.JList<Movie> lsAllMovies;
+    private javax.swing.JList<Movie> lsDirectorMovies;
+    private javax.swing.JTable tbDirectors;
+    private javax.swing.JTextField txtFirstname;
+    private javax.swing.JTextField txtLastname;
     // End of variables declaration//GEN-END:variables
+
+    private void init() {
+
+        try {
+            initValidation();
+            initRepository();
+            initTable();
+            initMoviesModel();
+        } catch (Exception ex) {
+            Logger.getLogger(DirectorPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage(UNRECOVERABLE_ERROR, CANNOT_INITIATE_THE_FORM);
+            System.exit(1);
+        }
+    }
+
+    private void initValidation() {
+        errorLabels = Arrays.asList(lblFirstnameError, lblLastnameError);
+        validationFields = Arrays.asList(txtFirstname, txtLastname);
+    }
+
+    private void initRepository() throws Exception {
+        repository = RepositoryFactory.getRepository();
+    }
+
+    private void initTable() throws Exception {
+        tbDirectors.setRowHeight(25);
+        tbDirectors.setAutoCreateRowSorter(true);
+        tbDirectors.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        directorsTableModel = new DirectorTableModel(repository.selectDirectors());
+        tbDirectors.setModel(directorsTableModel);
+    }
+
+    private void initMoviesModel() {
+
+        allMoviesModel = new DefaultListModel<>();
+        directorMoviesModel = new DefaultListModel<>();
+    }
+
+    private void clearForm() {
+
+        validationFields.forEach(e -> e.setText(""));
+        errorLabels.forEach(e -> e.setText(""));
+        selectedDirector = null;
+
+        allMoviesModel.clear();
+        lsAllMovies.setModel(allMoviesModel);
+
+        directorMoviesModel.clear();
+        lsDirectorMovies.setModel(directorMoviesModel);
+    }
+
+    private boolean formValid() {
+
+        boolean formOk = true;
+
+        for (int i = 0; i < validationFields.size(); i++) {
+            formOk &= !validationFields
+                    .get(i)
+                    .getText()
+                    .trim()
+                    .isEmpty();
+
+            errorLabels
+                    .get(i)
+                    .setText(validationFields
+                            .get(i)
+                            .getText()
+                            .trim()
+                            .isEmpty() ? "X" : "");
+        }
+
+        return formOk;
+    }
+
+    private void showDirector() {
+
+        clearForm();
+        int selectedRow = tbDirectors.getSelectedRow();
+        int rowIndex = tbDirectors.convertRowIndexToModel(selectedRow);
+        int selectedDirectorId = (int) directorsTableModel.getValueAt(rowIndex, 0);
+
+        try {
+            Optional<Director> optionalDirector = repository.selectDirector(selectedDirectorId);
+            if (optionalDirector.isPresent()) {
+                selectedDirector = optionalDirector.get();
+                fillForm(selectedDirector);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(DirectorPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage(ERROR, SHOW_DIRECTOR_ERROR);
+        }
+    }
+
+    private void fillForm(Director director) throws Exception {
+
+        txtFirstname.setText(director.getFirstName());
+        txtLastname.setText(director.getLastName());
+        loadModel(repository.selectMovies(), allMoviesModel, lsAllMovies);
+        loadModel(repository.selectDirectorMovies(selectedDirector.getId()), directorMoviesModel, lsDirectorMovies);
+    }
+
+    private void loadModel(List<Movie> movies, DefaultListModel<Movie> moviesModel, JList<Movie> moviesList) throws Exception {
+
+        moviesModel.clear();
+        movies.forEach(movie -> moviesModel.addElement(movie));
+        moviesList.setModel(moviesModel);
+    }
 }

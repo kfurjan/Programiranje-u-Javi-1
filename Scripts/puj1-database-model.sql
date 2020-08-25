@@ -314,11 +314,11 @@ GO
 CREATE PROCEDURE SelectActors
 AS
 BEGIN
-	select 
+	SELECT 
 		a.IDActor,
 		TRIM(left(a.Fullname, charindex(' ', a.Fullname))) as Firstname,
 		TRIM(SUBSTRING(a.Fullname, LEN(left(a.Fullname, charindex(' ', a.Fullname))) + 1, 100)) as Lastname
-	from Actor as a
+	FROM Actor as a
 END
 GO
 
@@ -346,7 +346,7 @@ END
 GO
 
 CREATE PROCEDURE selectActor
-	@IDMovie int
+	@IDActor int
 AS
 BEGIN
 	SELECT
@@ -355,7 +355,7 @@ BEGIN
 		TRIM(SUBSTRING(a.Fullname, LEN(left(a.Fullname, charindex(' ', a.Fullname))) + 1, 100)) as Lastname
 	FROM Actor as a
 	WHERE
-		a.IDActor = @IDMovie
+		a.IDActor = @IDActor
 END
 GO
 
@@ -413,6 +413,112 @@ AS
 BEGIN
 	DELETE FROM MovieActor
 		WHERE ActorID = @IDActor AND
+			  MovieID = @IDMovie
+END
+GO
+
+CREATE PROCEDURE SelectDirectors
+AS
+BEGIN
+	SELECT 
+		d.IDDirector,
+		TRIM(left(d.Fullname, charindex(' ', d.Fullname))) as Firstname,
+		TRIM(SUBSTRING(d.Fullname, LEN(left(d.Fullname, charindex(' ', d.Fullname))) + 1, 100)) as Lastname
+	FROM Director as d
+END
+GO
+
+CREATE PROCEDURE SelectDirectorMovies
+	@IDDirector int
+AS
+BEGIN
+	SELECT
+		m.IDMovie,
+		m.Title,
+		m.PublishedDate,
+		m.MovieDescription,
+		m.OriginalName,
+		m.MovieLength,
+		m.PicturePath,
+		m.Link,
+		m.StartDate
+	FROM Movie as m
+	inner join MovieDirector as md
+		on m.IDMovie = md.MovieID
+	inner join Director as d
+		on d.IDDirector = md.DirectorID
+	WHERE d.IDDirector = @IDDirector
+END
+GO
+
+CREATE PROCEDURE selectDirector
+	@IDDirector int
+AS
+BEGIN
+	SELECT
+		d.IDDirector,
+		TRIM(left(d.Fullname, charindex(' ', d.Fullname))) as Firstname,
+		TRIM(SUBSTRING(d.Fullname, LEN(left(d.Fullname, charindex(' ', d.Fullname))) + 1, 100)) as Lastname
+	FROM Director as d
+	WHERE
+		d.IDDirector = @IDDirector
+END
+GO
+
+CREATE PROCEDURE CreateDirector
+	@Firstname nvarchar(50),
+	@Lastname nvarchar(50)
+AS
+BEGIN
+	INSERT INTO Director(Fullname) VALUES
+		(@Firstname + ' ' + @Lastname)
+END
+GO
+
+CREATE PROCEDURE UpdateDirector
+	@IDDirector int,
+	@Firstname nvarchar(50),
+	@Lastname nvarchar(50)
+AS
+BEGIN
+	UPDATE 
+		Director
+	SET
+		Fullname = @Firstname + ' ' + @Lastname
+	WHERE
+		IDDirector = @IDDirector
+END
+GO
+
+CREATE PROCEDURE DeleteDirector
+	@IDDirector int
+AS
+BEGIN
+	DELETE FROM MovieDirector
+		WHERE DirectorID = @IDDirector
+
+	DELETE FROM Director
+		WHERE IDDirector = @IDDirector
+END
+GO
+
+CREATE PROCEDURE CreateMovieDirector
+	@IDMovie int,
+	@IDDirector int
+AS
+BEGIN
+	INSERT INTO MovieDirector(MovieID, DirectorID) VALUES
+		(@IDMovie, @IDDirector)
+END
+GO
+
+CREATE PROCEDURE DeleteMovieDirector
+	@IDMovie int,
+	@IDDirector int
+AS
+BEGIN
+	DELETE FROM MovieDirector
+		WHERE DirectorID = @IDDirector AND
 			  MovieID = @IDMovie
 END
 GO

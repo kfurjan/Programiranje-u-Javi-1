@@ -8,33 +8,33 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author Kevin Furjan
  */
-public class ActorTableModel extends AbstractTableModel {
+public class DirectorTableModel extends AbstractTableModel {
 
-    List<Actor> actors;
+    List<Director> directors;
 
     private static final String DELIMITER = "; ";
     private static final String[] COLUMN_NAMES = {"ID", "Firstname", "Lastname", "Movies"};
 
-    public ActorTableModel(List<Actor> actors) {
-        this.actors = actors;
+    public DirectorTableModel(List<Director> directors) {
+        this.directors = directors;
     }
 
-    public List<Actor> getActors() {
-        return actors;
+    public List<Director> getDirectors() {
+        return directors;
     }
 
-    public void setActors(List<Actor> actors) {
-        this.actors = actors;
+    public void setDirectors(List<Director> directors) {
+        this.directors = directors;
     }
 
     @Override
     public int getRowCount() {
-        return actors.size();
+        return directors.size();
     }
 
     @Override
     public int getColumnCount() {
-        return Actor.class.getDeclaredFields().length
+        return Director.class.getDeclaredFields().length
                 + Person.class.getDeclaredFields().length;
     }
 
@@ -43,13 +43,13 @@ public class ActorTableModel extends AbstractTableModel {
 
         switch (columnIndex) {
             case 0:
-                return actors.get(rowIndex).getId();
+                return directors.get(rowIndex).getId();
             case 1:
-                return actors.get(rowIndex).getFirstName();
+                return directors.get(rowIndex).getFirstName();
             case 2:
-                return actors.get(rowIndex).getLastName();
+                return directors.get(rowIndex).getLastName();
             case 3:
-                Optional<String> actorMovies = actors.get(rowIndex).getMovies()
+                Optional<String> actorMovies = directors.get(rowIndex).getMovies()
                         .stream()
                         .map(Movie::getTitle)
                         .reduce((partial, title) -> partial + DELIMITER + title);

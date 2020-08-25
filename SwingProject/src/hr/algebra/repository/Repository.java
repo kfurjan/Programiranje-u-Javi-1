@@ -2,6 +2,7 @@ package hr.algebra.repository;
 
 import hr.algebra.model.Actor;
 import hr.algebra.model.ApplicationUser;
+import hr.algebra.model.Director;
 import hr.algebra.model.Movie;
 
 import java.util.List;
@@ -45,4 +46,20 @@ public interface Repository {
     void addMovieToActor(int idMovie, int idActor) throws Exception;
 
     void removeMovieFromActor(int idMovie, int idActor) throws Exception;
+
+    List<Movie> selectDirectorMovies(int id) throws Exception;
+
+    List<Director> selectDirectors() throws Exception;
+
+    Optional<Director> selectDirector(int id) throws Exception;
+
+    void createDirector(Director director) throws Exception;
+
+    void updateDirector(int id, Director director) throws Exception;
+
+    void deleteDirector(int id) throws Exception;
+
+    void addMovieToDirector(int idMovie, int idDirector) throws Exception;
+
+    void removeMovieFromDirector(int idMovie, int idDirector) throws Exception;
 }
