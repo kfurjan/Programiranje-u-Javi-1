@@ -1,10 +1,12 @@
 package hr.algebra.panel;
 
 import hr.algebra.model.Actor;
+import hr.algebra.model.ActorArchive;
 import hr.algebra.model.ActorTableModel;
 import hr.algebra.model.Movie;
 import hr.algebra.repository.Repository;
 import hr.algebra.repository.RepositoryFactory;
+import hr.algebra.utils.JAXBUtils;
 import hr.algebra.utils.MessageUtils;
 import java.util.Arrays;
 import java.util.List;
@@ -33,15 +35,20 @@ public class ActorPanel extends javax.swing.JPanel {
     private DefaultListModel<Movie> allMoviesModel;
     private DefaultListModel<Movie> actorMoviesModel;
 
+    private static final String FILENAME = "actorsarchive.xml";
+
+    private static final String SUCCESS = "Success";
     private static final String ACTOR_ADDED = "Actor added";
     private static final String ACTOR_UPDATED = "Actor has been updated!";
     private static final String CHOOSE_AN_ACTOR = "Please choose an actor to update";
     private static final String CHOOSE_ACTOR_MOVIE = "Please choose a movie and an actor";
     private static final String WRONG_OPERATION = "Wrong operation";
     private static final String NEW_ACTOR_ADDED = "New actor has been successfully added";
+    private static final String ACTORS_DOWNLOADED = "Actors downloaded";
     private static final String DELETE_ACTOR_TITLE = "Delete actor";
     private static final String ACTOR_UPDATED_TITLE = "Actor updated";
     private static final String CONFIRM_ACTOR_DELETION = "Do you really want to delete this actor?";
+    private static final String UNABLE_TO_DOWNLAOD_ACTORS = "Unable to downlaod actors";
 
     private static final String ERROR = "Error";
     private static final String DELETE_ERROR = "Unable to delete actor!";
@@ -87,6 +94,7 @@ public class ActorPanel extends javax.swing.JPanel {
         jScrollPane4 = new javax.swing.JScrollPane();
         lsAllMovies = new javax.swing.JList<>();
         btnAddActorMovies = new javax.swing.JButton();
+        btnDownloadActors = new javax.swing.JButton();
 
         tbActors.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -159,6 +167,13 @@ public class ActorPanel extends javax.swing.JPanel {
             }
         });
 
+        btnDownloadActors.setText("XML Download");
+        btnDownloadActors.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDownloadActorsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -167,9 +182,19 @@ public class ActorPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1138, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btnRemoveMovie, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(344, 344, 344))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btnAddActorMovies, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(339, 339, 339))))
             .addGroup(layout.createSequentialGroup()
                 .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnDownloadActors)
                     .addComponent(lblFirstname1)
                     .addComponent(lblFirstname)
                     .addGroup(layout.createSequentialGroup()
@@ -192,15 +217,6 @@ public class ActorPanel extends javax.swing.JPanel {
                                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnRemoveMovie, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(344, 344, 344))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnAddActorMovies, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(339, 339, 339))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -234,7 +250,9 @@ public class ActorPanel extends javax.swing.JPanel {
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(btnRemoveMovie)))
-                .addGap(108, 108, 108)
+                .addGap(40, 40, 40)
+                .addComponent(btnDownloadActors)
+                .addGap(36, 36, 36)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -344,11 +362,22 @@ public class ActorPanel extends javax.swing.JPanel {
         showActor();
     }//GEN-LAST:event_tbActorsKeyReleased
 
+    private void btnDownloadActorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDownloadActorsActionPerformed
+
+        try {
+            JAXBUtils.save(new ActorArchive(repository.selectActors()), FILENAME);
+            MessageUtils.showInformationMessage(SUCCESS, ACTORS_DOWNLOADED);
+        } catch (Exception ex) {
+            MessageUtils.showErrorMessage(ERROR, UNABLE_TO_DOWNLAOD_ACTORS);
+            Logger.getLogger(ActorPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnDownloadActorsActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddActor;
     private javax.swing.JButton btnAddActorMovies;
     private javax.swing.JButton btnDeleteActor;
+    private javax.swing.JButton btnDownloadActors;
     private javax.swing.JButton btnRemoveMovie;
     private javax.swing.JButton btnUpdateActor;
     private javax.swing.JScrollPane jScrollPane1;

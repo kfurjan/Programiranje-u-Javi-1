@@ -2,25 +2,41 @@ package hr.algebra.model;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * @author Kevin Furjan
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Movie {
 
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     private int id;
     private String title;
+
+    @XmlJavaTypeAdapter(PublishedDateAdapter.class)
+    @XmlElement(name = "publisheddate")
     private LocalDateTime publishedDate;
+
     private String description;
+
+    @XmlElement(name = "originalname")
     private String originalName;
+
     private String directors;
     private String actors;
     private String length;
     private String genre;
+
+    @XmlElement(name = "picturepath")
     private String picturePath;
     private String link;
+
+    @XmlElement(name = "startdate")
     private String startDate;
 
     public Movie() {}

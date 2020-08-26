@@ -1,13 +1,21 @@
 package hr.algebra.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  * @author Kevin Furjan
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Person {
 
     private int id;
 
+    @XmlElement(name = "firstname")
     private String firstName;
+
+    @XmlElement(name = "lastname")
     private String lastName;
 
     public Person(String firstName, String lastName) {

@@ -20,5 +20,4 @@ public class JAXBUtils {
         Unmarshaller unmarshaller = context.createUnmarshaller();
         return unmarshaller.unmarshal(new File(filename));
     }
-
 }
