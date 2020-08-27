@@ -522,3 +522,18 @@ BEGIN
 			  MovieID = @IDMovie
 END
 GO
+
+CREATE PROCEDURE SelectMovieGenres
+	@IDMovie int
+AS
+BEGIN
+	SELECT
+		g.GenreName
+	FROM Genre as g
+	INNER JOIN MovieGenre as mg
+		on g.IDGenre = mg.GenreID
+	INNER JOIN Movie as m
+		on m.IDMovie = mg.MovieID
+	WHERE m.IDMovie = @IDMovie
+END
+GO

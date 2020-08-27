@@ -2,9 +2,11 @@ package hr.algebra.model;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
@@ -39,7 +41,12 @@ public class Movie {
     @XmlElement(name = "startdate")
     private String startDate;
 
-    public Movie() {}
+    @XmlElementWrapper
+    @XmlElement(name = "genre")
+    private List<Genre> genres;
+
+    public Movie() {
+    }
 
     public Movie(String title, LocalDateTime publishedDate, String description, String originalName, String length, String picturePath, String link, String startDate) {
         this.title = title;
@@ -55,6 +62,11 @@ public class Movie {
     public Movie(int id, String title, LocalDateTime publishedDate, String description, String originalName, String length, String picturePath, String link, String startDate) {
         this(title, publishedDate, description, originalName, length, picturePath, link, startDate);
         this.id = id;
+    }
+
+    public Movie(int id, String title, LocalDateTime publishedDate, String description, String originalName, String length, String picturePath, String link, String startDate, List<Genre> genres) {
+        this(id, title, publishedDate, description, originalName, length, picturePath, link, startDate);
+        this.genres = genres;
     }
 
     public Movie(String title, LocalDateTime publishedDate, String description, String originalName, String directors, String actors, String length, String genre, String picturePath, String link, String startDate) {
@@ -158,6 +170,14 @@ public class Movie {
 
     public void setStartDate(String startDate) {
         this.startDate = startDate;
+    }
+
+    public List<Genre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
     }
 
     @Override

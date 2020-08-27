@@ -1,12 +1,16 @@
 package hr.algebra.model;
 
 import java.util.List;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 
 /**
  * @author Kevin Furjan
  */
 public class Director extends Person {
 
+    @XmlElementWrapper
+    @XmlElement(name = "movie")
     private List<Movie> movies;
 
     public Director(String firstName, String lastName) {

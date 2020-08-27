@@ -27,72 +27,80 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="btnAddMovie" pref="159" max="32767" attributes="0"/>
-                                      <EmptySpace min="-2" pref="79" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                          <Component id="txtOriginalName" alignment="0" max="32767" attributes="0"/>
-                                          <Component id="lblTitle" alignment="0" min="-2" max="-2" attributes="0"/>
-                                          <Component id="lblPublishedDate" alignment="0" min="-2" max="-2" attributes="0"/>
-                                          <Component id="lblDescription" alignment="0" min="-2" max="-2" attributes="0"/>
-                                          <Component id="lblOriginalName" alignment="0" min="-2" max="-2" attributes="0"/>
-                                          <Component id="txtTitle" alignment="0" pref="150" max="32767" attributes="0"/>
-                                          <Component id="txtPublishedDate" alignment="0" pref="150" max="32767" attributes="0"/>
-                                          <Component id="txtDescription" alignment="0" pref="150" max="32767" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Component id="btnAddMovie" pref="159" max="32767" attributes="0"/>
+                                              <EmptySpace min="-2" pref="79" max="-2" attributes="0"/>
+                                          </Group>
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                                  <Component id="txtOriginalName" alignment="0" max="32767" attributes="0"/>
+                                                  <Component id="lblTitle" alignment="0" min="-2" max="-2" attributes="0"/>
+                                                  <Component id="lblPublishedDate" alignment="0" min="-2" max="-2" attributes="0"/>
+                                                  <Component id="lblDescription" alignment="0" min="-2" max="-2" attributes="0"/>
+                                                  <Component id="lblOriginalName" alignment="0" min="-2" max="-2" attributes="0"/>
+                                                  <Component id="txtTitle" alignment="0" pref="150" max="32767" attributes="0"/>
+                                                  <Component id="txtPublishedDate" alignment="0" pref="150" max="32767" attributes="0"/>
+                                                  <Component id="txtDescription" alignment="0" pref="150" max="32767" attributes="0"/>
+                                              </Group>
+                                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                              <Group type="103" groupAlignment="0" attributes="0">
+                                                  <Group type="102" attributes="0">
+                                                      <Component id="lblTitleError" min="-2" max="-2" attributes="0"/>
+                                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                                  </Group>
+                                                  <Group type="102" attributes="0">
+                                                      <Group type="103" groupAlignment="0" attributes="0">
+                                                          <Component id="lblPublishedDateError" min="-2" max="-2" attributes="0"/>
+                                                          <Component id="lblDescriptionError" min="-2" max="-2" attributes="0"/>
+                                                          <Component id="lblOriginalNameError" min="-2" max="-2" attributes="0"/>
+                                                      </Group>
+                                                      <EmptySpace max="32767" attributes="0"/>
+                                                  </Group>
+                                              </Group>
+                                          </Group>
                                       </Group>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Group type="102" attributes="0">
-                                              <Component id="lblTitleError" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                              <Group type="103" groupAlignment="0" attributes="0">
+                                                  <Component id="txtLength" max="32767" attributes="0"/>
+                                                  <Component id="txtLink" alignment="0" max="32767" attributes="0"/>
+                                                  <Component id="txtStartDate" alignment="0" max="32767" attributes="0"/>
+                                                  <Group type="102" attributes="0">
+                                                      <Component id="lblStartDate" min="-2" max="-2" attributes="0"/>
+                                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                                  </Group>
+                                              </Group>
+                                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                              <Group type="103" groupAlignment="0" attributes="0">
+                                                  <Component id="lblLengthError" min="-2" max="-2" attributes="0"/>
+                                                  <Component id="lblLinkError" min="-2" max="-2" attributes="0"/>
+                                                  <Component id="lblStartDateError" min="-2" max="-2" attributes="0"/>
+                                              </Group>
                                           </Group>
                                           <Group type="102" attributes="0">
                                               <Group type="103" groupAlignment="0" attributes="0">
-                                                  <Component id="lblPublishedDateError" min="-2" max="-2" attributes="0"/>
-                                                  <Component id="lblDescriptionError" min="-2" max="-2" attributes="0"/>
-                                                  <Component id="lblOriginalNameError" min="-2" max="-2" attributes="0"/>
+                                                  <Component id="lblLength" alignment="0" min="-2" max="-2" attributes="0"/>
+                                                  <Component id="btnUpdateMovie" alignment="0" min="-2" pref="150" max="-2" attributes="0"/>
+                                                  <Component id="lblLink" min="-2" max="-2" attributes="0"/>
                                               </Group>
-                                              <EmptySpace max="32767" attributes="0"/>
+                                              <EmptySpace min="0" pref="9" max="32767" attributes="0"/>
                                           </Group>
                                       </Group>
                                   </Group>
-                              </Group>
-                              <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="txtLength" max="32767" attributes="0"/>
-                                          <Component id="txtLink" alignment="0" max="32767" attributes="0"/>
-                                          <Component id="txtStartDate" alignment="0" max="32767" attributes="0"/>
-                                          <Group type="102" attributes="0">
-                                              <Component id="lblStartDate" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                                          </Group>
-                                      </Group>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="lblLengthError" min="-2" max="-2" attributes="0"/>
-                                          <Component id="lblLinkError" min="-2" max="-2" attributes="0"/>
-                                          <Component id="lblStartDateError" min="-2" max="-2" attributes="0"/>
-                                      </Group>
-                                  </Group>
-                                  <Group type="102" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="lblLength" alignment="0" min="-2" max="-2" attributes="0"/>
-                                          <Component id="btnUpdateMovie" alignment="0" min="-2" pref="150" max="-2" attributes="0"/>
-                                          <Component id="lblLink" min="-2" max="-2" attributes="0"/>
-                                      </Group>
-                                      <EmptySpace min="0" pref="9" max="32767" attributes="0"/>
+                                      <Component id="btnDeleteMovie" max="32767" attributes="0"/>
+                                      <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
+                              <EmptySpace min="-2" pref="186" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
-                              <Component id="btnDeleteMovie" max="32767" attributes="0"/>
-                              <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                              <Component id="btnDownloadMovies" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace min="-2" pref="186" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" attributes="0">
                               <Component id="txtPicturePath" min="-2" pref="377" max="-2" attributes="0"/>
@@ -180,10 +188,12 @@
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="btnDeleteMovie" min="-2" pref="32" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" pref="77" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="btnDownloadMovies" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
-                      <Component id="lblPoster" max="32767" attributes="0"/>
+                      <Component id="lblPoster" pref="345" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="txtPicturePath" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -396,6 +406,14 @@
           <Image iconType="3" name="/placeholder/no_image.png"/>
         </Property>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnDownloadMovies">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="XML Download"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDownloadMoviesActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

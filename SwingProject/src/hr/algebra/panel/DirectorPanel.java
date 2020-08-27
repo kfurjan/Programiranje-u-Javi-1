@@ -1,10 +1,12 @@
 package hr.algebra.panel;
 
 import hr.algebra.model.Director;
+import hr.algebra.model.DirectorArchive;
 import hr.algebra.model.DirectorTableModel;
 import hr.algebra.model.Movie;
 import hr.algebra.repository.Repository;
 import hr.algebra.repository.RepositoryFactory;
+import hr.algebra.utils.JAXBUtils;
 import hr.algebra.utils.MessageUtils;
 import java.util.Arrays;
 import java.util.List;
@@ -32,16 +34,21 @@ public class DirectorPanel extends javax.swing.JPanel {
     private List<JTextComponent> validationFields;
     private DefaultListModel<Movie> allMoviesModel;
     private DefaultListModel<Movie> directorMoviesModel;
-
+    
+    private static final String FILENAME = "directorsarchive.xml";
+    
+    private static final String SUCCESS = "Success";
     private static final String DIRECTOR_ADDED = "Director added";
     private static final String DIRECTOR_UPDATED = "Director has been updated!";
     private static final String CHOOSE_DIRECTOR = "Please choose director to update";
+    private static final String DIRECTORS_DOWNLOADED = "Directors downloaded";
     private static final String CHOOSE_DIRECTOR_MOVIE = "Please choose a movie and director";
     private static final String WRONG_OPERATION = "Wrong operation";
     private static final String NEW_DIRECTOR_ADDED = "New director has been successfully added";
     private static final String DELETE_DIRECTOR_TITLE = "Delete director";
     private static final String DIRECTOR_UPDATED_TITLE = "Director updated";
     private static final String CONFIRM_DIRECTOR_DELETION = "Do you really want to delete this director?";
+    private static final String UNABLE_TO_DOWNLAOD_DIRECTORS = "Unable to downlaod directors";
 
     private static final String ERROR = "Error";
     private static final String DELETE_ERROR = "Unable to delete director!";
@@ -87,6 +94,7 @@ public class DirectorPanel extends javax.swing.JPanel {
         btnAddDirector = new javax.swing.JButton();
         lblFirstnameError = new javax.swing.JLabel();
         lblLastnameError = new javax.swing.JLabel();
+        btnDownloadDirectors = new javax.swing.JButton();
 
         tbDirectors.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -159,6 +167,13 @@ public class DirectorPanel extends javax.swing.JPanel {
 
         lblLastnameError.setForeground(new java.awt.Color(255, 0, 0));
 
+        btnDownloadDirectors.setText("XML Download");
+        btnDownloadDirectors.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDownloadDirectorsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -170,38 +185,40 @@ public class DirectorPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(73, 73, 73)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblLastname)
-                    .addComponent(lblFirstname)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(txtFirstname, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblFirstnameError))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(btnDeleteDirector, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtLastname, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(btnAddDirector)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnUpdateDirector)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(328, 328, 328)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lblLastnameError)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 685, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(btnRemoveMovie, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(203, 203, 203))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(btnAddDirectorMovies, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(198, 198, 198)))))
+                    .addComponent(btnDownloadDirectors)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(lblLastname)
+                        .addComponent(lblFirstname)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(txtFirstname, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(lblFirstnameError))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(btnDeleteDirector, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtLastname, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                    .addComponent(btnAddDirector)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnUpdateDirector)))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(328, 328, 328)
+                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(lblLastnameError)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 685, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addComponent(btnRemoveMovie, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(203, 203, 203))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addComponent(btnAddDirectorMovies, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(198, 198, 198))))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -236,7 +253,9 @@ public class DirectorPanel extends javax.swing.JPanel {
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(btnRemoveMovie)))
-                .addGap(86, 86, 86)
+                .addGap(12, 12, 12)
+                .addComponent(btnDownloadDirectors)
+                .addGap(42, 42, 42)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -346,11 +365,23 @@ public class DirectorPanel extends javax.swing.JPanel {
         showDirector();
     }//GEN-LAST:event_tbDirectorsMouseClicked
 
+    private void btnDownloadDirectorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDownloadDirectorsActionPerformed
+
+        try {
+            JAXBUtils.save(new DirectorArchive(repository.selectDirectors()), FILENAME);
+            MessageUtils.showInformationMessage(SUCCESS, DIRECTORS_DOWNLOADED);
+        } catch (Exception ex) {
+            MessageUtils.showErrorMessage(ERROR, UNABLE_TO_DOWNLAOD_DIRECTORS);
+            Logger.getLogger(DirectorPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnDownloadDirectorsActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddDirector;
     private javax.swing.JButton btnAddDirectorMovies;
     private javax.swing.JButton btnDeleteDirector;
+    private javax.swing.JButton btnDownloadDirectors;
     private javax.swing.JButton btnRemoveMovie;
     private javax.swing.JButton btnUpdateDirector;
     private javax.swing.JScrollPane jScrollPane1;

@@ -1,6 +1,7 @@
 package hr.algebra.model;
 
 import java.util.List;
+import java.util.Optional;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -10,10 +11,11 @@ import javax.swing.table.AbstractTableModel;
 public class MovieTableModel extends AbstractTableModel {
 
     List<Movie> movies;
+
+    private static final String DELIMITER = "; ";
     private static final String[] COLUMN_NAMES
             = {"ID", "Title", "Published date", "Description", "Original name",
-                "Length", "Picture path", "Link", "Start date"};
-
+                "Length", "Picture path", "Link", "Start date", "Genre"};
 
     public MovieTableModel(List<Movie> movies) {
         this.movies = movies;
@@ -34,7 +36,7 @@ public class MovieTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return Movie.class.getDeclaredFields().length - 5;
+        return Movie.class.getDeclaredFields().length - 4;
     }
 
     @Override
@@ -59,6 +61,13 @@ public class MovieTableModel extends AbstractTableModel {
                 return movies.get(rowIndex).getLink();
             case 8:
                 return movies.get(rowIndex).getStartDate();
+            case 9:
+                Optional<String> genres = movies.get(rowIndex).getGenres()
+                        .stream()
+                        .map(Genre::getName)
+                        .reduce((partial, name) -> partial + DELIMITER + name);
+
+                return genres.isPresent() ? genres.get() : "";
             default:
                 throw new RuntimeException("No such column");
         }

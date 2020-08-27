@@ -3,6 +3,7 @@ package hr.algebra.repository;
 import hr.algebra.model.Actor;
 import hr.algebra.model.ApplicationUser;
 import hr.algebra.model.Director;
+import hr.algebra.model.Genre;
 import hr.algebra.model.Movie;
 
 import java.util.List;
@@ -20,6 +21,8 @@ public interface Repository {
     void createMovies(List<Movie> movies) throws Exception;
 
     void createMovie(Movie movie) throws Exception;
+
+    List<Genre> selectMovieGenres(int id) throws Exception;
 
     List<Movie> selectMovies() throws Exception;
 
