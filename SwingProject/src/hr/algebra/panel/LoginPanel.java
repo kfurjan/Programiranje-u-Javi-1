@@ -26,11 +26,12 @@ public class LoginPanel extends javax.swing.JPanel {
     private List<JLabel> errorLabels;
     private List<JTextComponent> validationFields;
 
-    private static final String MOVIES = "Movies";
-    private static final String ACTORS = "Actors";
-    private static final String DIRECTORS = "Directors";
     private static final String ADMIN_PANEL = "Admin panel";
+    private static final String MOVIES_PANEL = "Movies";
+    private static final String ACTORS_PANEL = "Actors";
+    private static final String DIRECTORS_PANEL = "Directors";
     private static final String CREATE_NEW_USER_PANEL = "Create new user";
+    private static final String DRAG_AND_DROP_PANEL = "Drag and drop";
 
     private static final String LOGIN_ERROR = "Error while loging in";
     private static final String UNRECOVERABLE_ERROR = "Unrecoverable error";
@@ -171,9 +172,10 @@ public class LoginPanel extends javax.swing.JPanel {
                         case User:
                             topFrame.setSize(1200, 850);
                             topFrame.getTpContent().remove(this);
-                            topFrame.getTpContent().add(MOVIES, new MoviePanel());
-                            topFrame.getTpContent().add(ACTORS, new ActorPanel());
-                            topFrame.getTpContent().add(DIRECTORS, new DirectorPanel());
+                            topFrame.getTpContent().add(MOVIES_PANEL, new MoviePanel());
+                            topFrame.getTpContent().add(ACTORS_PANEL, new ActorPanel());
+                            topFrame.getTpContent().add(DIRECTORS_PANEL, new DirectorPanel());
+                            topFrame.getTpContent().add(DRAG_AND_DROP_PANEL, new DragAndDropPanel());
                             break;
                         default:
                             break;
