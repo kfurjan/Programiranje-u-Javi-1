@@ -138,7 +138,7 @@ public class AdminPanel extends javax.swing.JPanel {
             initAssetsPath();
             loadModel();
         } catch (Exception ex) {
-            Logger.getLogger(LoginPanel.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdminPanel.class.getName()).log(Level.SEVERE, null, ex);
             MessageUtils.showErrorMessage(UNRECOVERABLE_ERROR, CANNOT_INITIATE_THE_FORM);
             System.exit(1);
         }

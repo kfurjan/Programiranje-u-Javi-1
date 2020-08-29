@@ -33,9 +33,4 @@ public class Director extends Person {
     public void setMovies(List<Movie> movies) {
         this.movies = movies;
     }
-
-    @Override
-    public String toString() {
-        return super.getFirstName() + super.getLastName();
-    }
 }

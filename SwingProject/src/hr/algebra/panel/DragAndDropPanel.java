@@ -2,18 +2,35 @@ package hr.algebra.panel;
 
 import hr.algebra.model.Actor;
 import hr.algebra.model.Movie;
+import hr.algebra.repository.Repository;
+import hr.algebra.repository.RepositoryFactory;
+import hr.algebra.utils.MessageUtils;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 
 /**
  *
  * @author Kevin Furjan
  */
 public class DragAndDropPanel extends javax.swing.JPanel {
+    
+    Repository repository;
+    private DefaultListModel<Movie> moviesModel;
+    private DefaultListModel<Actor> movieActorsModel;
+    private DefaultListModel<Actor> allActorsModel;
+    
+    private static final String ERROR = "Error";
+    private static final String MOVIE_ACTORS_ERROR = "Unable to show actors for selected movie";
+    private static final String UNRECOVERABLE_ERROR = "Unrecoverable error";
+    private static final String CANNOT_INITIATE_THE_FORM = "Cannot initiate the form";
 
     /**
      * Creates new form DragAndDropPanel
      */
     public DragAndDropPanel() {
         initComponents();
+        init();
     }
 
     /**
@@ -37,6 +54,16 @@ public class DragAndDropPanel extends javax.swing.JPanel {
 
         jLabel1.setText("All movies:");
 
+        lsAllMovies.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lsAllMoviesMouseClicked(evt);
+            }
+        });
+        lsAllMovies.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                lsAllMoviesKeyReleased(evt);
+            }
+        });
         jScrollPane1.setViewportView(lsAllMovies);
 
         jLabel2.setText("Actors for selected movie:");
@@ -87,6 +114,16 @@ public class DragAndDropPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void lsAllMoviesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lsAllMoviesKeyReleased
+        
+        showMovieActors();
+    }//GEN-LAST:event_lsAllMoviesKeyReleased
+
+    private void lsAllMoviesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lsAllMoviesMouseClicked
+        
+        showMovieActors();
+    }//GEN-LAST:event_lsAllMoviesMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
@@ -99,4 +136,64 @@ public class DragAndDropPanel extends javax.swing.JPanel {
     private javax.swing.JList<Movie> lsAllMovies;
     private javax.swing.JList<Actor> lsMovieActors;
     // End of variables declaration//GEN-END:variables
+
+    private void init() {
+        
+        try {
+            initRepository();
+            initModels();
+            loadMoviesModel();
+        } catch (Exception ex) {
+            Logger.getLogger(DragAndDropPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage(UNRECOVERABLE_ERROR, CANNOT_INITIATE_THE_FORM);
+            System.exit(1);
+        }
+    }
+    
+    private void initRepository() throws Exception {
+        
+        repository = RepositoryFactory.getRepository();
+    }
+    
+    private void initModels() {
+        
+        moviesModel = new DefaultListModel<>();
+        movieActorsModel = new DefaultListModel<>();
+        allActorsModel = new DefaultListModel<>();
+    }
+    
+    private void loadMoviesModel() throws Exception {
+        
+        moviesModel.clear();
+        repository.selectMovies().forEach(movie -> moviesModel.addElement(movie));
+        lsAllMovies.setModel(moviesModel);
+    }
+    
+    private void showMovieActors() {
+        
+        try {
+            loadMovieActors();
+            loadAllActors();
+        } catch (Exception ex) {
+            Logger.getLogger(DragAndDropPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage(ERROR, MOVIE_ACTORS_ERROR);
+        }
+    }
+    
+    private void loadMovieActors() {
+        
+        try {
+            
+        } catch (Exception ex) {
+            Logger.getLogger(DragAndDropPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage(ERROR, MOVIE_ACTORS_ERROR);
+        }
+    }
+    
+    private void loadAllActors() throws Exception {
+        
+        allActorsModel.clear();
+        repository.selectActors().forEach(actor -> allActorsModel.addElement(actor));
+        lsAllActors.setModel(allActorsModel);
+    }
 }
