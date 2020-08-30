@@ -33,6 +33,8 @@ public interface Repository {
     void updateMovie(int id, Movie movie) throws Exception;
 
     void deleteMovie(int id) throws Exception;
+    
+    List<Actor> selectMovieActors(int id) throws Exception;
 
     List<Movie> selectActorMovies(int id) throws Exception;
 

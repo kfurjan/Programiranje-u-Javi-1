@@ -1,25 +1,38 @@
 package hr.algebra.panel;
 
 import hr.algebra.model.Actor;
+import hr.algebra.model.ActorTransferable;
 import hr.algebra.model.Movie;
 import hr.algebra.repository.Repository;
 import hr.algebra.repository.RepositoryFactory;
 import hr.algebra.utils.MessageUtils;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.DropMode;
+import javax.swing.JComponent;
+import javax.swing.ListSelectionModel;
+import javax.swing.TransferHandler;
+import static javax.swing.TransferHandler.COPY;
 
 /**
  *
  * @author Kevin Furjan
  */
 public class DragAndDropPanel extends javax.swing.JPanel {
-    
+
     Repository repository;
+    private Set<Actor> actorsSet = new TreeSet<>();
     private DefaultListModel<Movie> moviesModel;
     private DefaultListModel<Actor> movieActorsModel;
     private DefaultListModel<Actor> allActorsModel;
-    
+
     private static final String ERROR = "Error";
     private static final String MOVIE_ACTORS_ERROR = "Unable to show actors for selected movie";
     private static final String UNRECOVERABLE_ERROR = "Unrecoverable error";
@@ -115,12 +128,12 @@ public class DragAndDropPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void lsAllMoviesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lsAllMoviesKeyReleased
-        
+
         showMovieActors();
     }//GEN-LAST:event_lsAllMoviesKeyReleased
 
     private void lsAllMoviesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lsAllMoviesMouseClicked
-        
+
         showMovieActors();
     }//GEN-LAST:event_lsAllMoviesMouseClicked
 
@@ -138,39 +151,40 @@ public class DragAndDropPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void init() {
-        
+
         try {
             initRepository();
             initModels();
             loadMoviesModel();
+            initDragAndDrop();
         } catch (Exception ex) {
             Logger.getLogger(DragAndDropPanel.class.getName()).log(Level.SEVERE, null, ex);
             MessageUtils.showErrorMessage(UNRECOVERABLE_ERROR, CANNOT_INITIATE_THE_FORM);
             System.exit(1);
         }
     }
-    
+
     private void initRepository() throws Exception {
-        
+
         repository = RepositoryFactory.getRepository();
     }
-    
+
     private void initModels() {
-        
+
         moviesModel = new DefaultListModel<>();
         movieActorsModel = new DefaultListModel<>();
         allActorsModel = new DefaultListModel<>();
     }
-    
+
     private void loadMoviesModel() throws Exception {
-        
+
         moviesModel.clear();
         repository.selectMovies().forEach(movie -> moviesModel.addElement(movie));
         lsAllMovies.setModel(moviesModel);
     }
-    
+
     private void showMovieActors() {
-        
+
         try {
             loadMovieActors();
             loadAllActors();
@@ -179,21 +193,73 @@ public class DragAndDropPanel extends javax.swing.JPanel {
             MessageUtils.showErrorMessage(ERROR, MOVIE_ACTORS_ERROR);
         }
     }
-    
-    private void loadMovieActors() {
-        
-        try {
-            
-        } catch (Exception ex) {
-            Logger.getLogger(DragAndDropPanel.class.getName()).log(Level.SEVERE, null, ex);
-            MessageUtils.showErrorMessage(ERROR, MOVIE_ACTORS_ERROR);
-        }
+
+    private void loadMovieActors() throws Exception {
+
+        movieActorsModel.clear();
+        List<Actor> actorsList = repository.selectMovieActors(lsAllMovies.getSelectedValue().getId());
+        actorsList.forEach(actor -> movieActorsModel.addElement(actor));
+        actorsSet.addAll(actorsList);
+        lsMovieActors.setModel(movieActorsModel);
     }
-    
+
     private void loadAllActors() throws Exception {
-        
+
         allActorsModel.clear();
         repository.selectActors().forEach(actor -> allActorsModel.addElement(actor));
         lsAllActors.setModel(allActorsModel);
+    }
+
+    private void initDragAndDrop() {
+
+        lsAllActors.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        lsAllActors.setDragEnabled(true);
+        lsAllActors.setTransferHandler(new ExportTransferHandler());
+
+        lsMovieActors.setDropMode(DropMode.ON);
+        lsMovieActors.setTransferHandler(new ImportTransferHandler());
+    }
+
+    private class ExportTransferHandler extends TransferHandler {
+
+        @Override
+        public int getSourceActions(JComponent c) {
+            return COPY;
+        }
+
+        @Override
+        public Transferable createTransferable(JComponent c) {
+            return new ActorTransferable(lsAllActors.getSelectedValue());
+        }
+    }
+
+    private class ImportTransferHandler extends TransferHandler {
+
+        @Override
+        public boolean canImport(TransferHandler.TransferSupport support) {
+            return support.isDataFlavorSupported(ActorTransferable.ACTOR_FLAVOR);
+        }
+
+        @Override
+        public boolean importData(TransferHandler.TransferSupport support) {
+            Transferable transferable = support.getTransferable();
+            try {
+                Actor add = (Actor) transferable.getTransferData(ActorTransferable.ACTOR_FLAVOR);
+                if (actorsSet.add(add)) {
+                    loadActorsModel();
+                    return true;
+                }
+            } catch (UnsupportedFlavorException | IOException ex) {
+                Logger.getLogger(DragAndDropPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return false;
+        }
+
+        private void loadActorsModel() {
+
+            movieActorsModel.clear();
+            actorsSet.forEach(author -> movieActorsModel.addElement(author));
+            lsMovieActors.setModel(movieActorsModel);
+        }
     }
 }

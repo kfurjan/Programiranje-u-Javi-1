@@ -537,3 +537,21 @@ BEGIN
 	WHERE m.IDMovie = @IDMovie
 END
 GO
+
+CREATE PROCEDURE selectMovieActors
+	@IDMovie int
+AS
+BEGIN
+	SELECT
+		a.IDActor,
+		TRIM(left(a.Fullname, charindex(' ', a.Fullname))) as Firstname,
+		TRIM(SUBSTRING(a.Fullname, LEN(left(a.Fullname, charindex(' ', a.Fullname))) + 1, 100)) as Lastname
+	FROM Actor as a
+	INNER JOIN MovieActor as ma
+		on a.IDActor = ma.ActorID
+	INNER JOIN Movie as m
+		on m.IDMovie = ma.MovieID
+	WHERE
+		m.IDMovie = @IDMovie
+END
+GO

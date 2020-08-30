@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
  * @author Kevin Furjan
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Person {
+public class Person implements Comparable<Person> {
 
     private int id;
 
@@ -56,5 +56,10 @@ public class Person {
     @Override
     public String toString() {
         return firstName + " " + lastName;
+    }
+
+    @Override
+    public int compareTo(Person o) {
+        return ((Integer) id).compareTo(o.id);
     }
 }
