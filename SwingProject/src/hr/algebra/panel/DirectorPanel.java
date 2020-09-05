@@ -8,17 +8,14 @@ import hr.algebra.repository.Repository;
 import hr.algebra.repository.RepositoryFactory;
 import hr.algebra.utils.JAXBUtils;
 import hr.algebra.utils.MessageUtils;
+
+import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultListModel;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.text.JTextComponent;
 
 /**
  *

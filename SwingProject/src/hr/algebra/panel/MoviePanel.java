@@ -9,6 +9,9 @@ import hr.algebra.utils.FileUtils;
 import hr.algebra.utils.IconUtils;
 import hr.algebra.utils.JAXBUtils;
 import hr.algebra.utils.MessageUtils;
+
+import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,11 +23,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.text.JTextComponent;
 
 /**
  *

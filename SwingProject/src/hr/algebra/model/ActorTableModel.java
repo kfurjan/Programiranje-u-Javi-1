@@ -1,19 +1,17 @@
 package hr.algebra.model;
 
+import javax.swing.table.AbstractTableModel;
 import java.util.List;
 import java.util.Optional;
-import javax.swing.table.AbstractTableModel;
 
 /**
- *
  * @author Kevin Furjan
  */
 public class ActorTableModel extends AbstractTableModel {
 
-    List<Actor> actors;
-
     private static final String DELIMITER = "; ";
     private static final String[] COLUMN_NAMES = {"ID", "Firstname", "Lastname", "Movies"};
+    List<Actor> actors;
 
     public ActorTableModel(List<Actor> actors) {
         this.actors = actors;

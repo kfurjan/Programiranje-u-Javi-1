@@ -1,11 +1,6 @@
 package hr.algebra.repository.sql;
 
-import hr.algebra.model.Actor;
-import hr.algebra.model.ApplicationUser;
-import hr.algebra.model.Director;
-import hr.algebra.model.Genre;
-import hr.algebra.model.Movie;
-import hr.algebra.model.UserType;
+import hr.algebra.model.*;
 import hr.algebra.repository.Repository;
 import hr.algebra.wrapper.ThrowingConsumer;
 
@@ -93,7 +88,7 @@ public class SqlRepository implements Repository {
     public Optional<ApplicationUser> getApplicationUser(String username, String password) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(GET_APPLICATION_USER)) {
+             CallableStatement stmt = con.prepareCall(GET_APPLICATION_USER)) {
 
             stmt.setString(1, username);
             stmt.setString(2, password);
@@ -117,7 +112,7 @@ public class SqlRepository implements Repository {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(CREATE_NEW_USER)) {
+             CallableStatement stmt = con.prepareCall(CREATE_NEW_USER)) {
 
             stmt.setString(1, username);
             stmt.setString(2, password);
@@ -131,7 +126,7 @@ public class SqlRepository implements Repository {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(CREATE_MOVIES)) {
+             CallableStatement stmt = con.prepareCall(CREATE_MOVIES)) {
 
             movies.forEach(handlingConsumerWrapper(movie -> {
                 stmt.setString(1, movie.getTitle());
@@ -158,7 +153,7 @@ public class SqlRepository implements Repository {
         DataSource dataSource = DataSourceSingleton.getInstance();
 
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(SELECT_MOVIE_GENRES)) {
+             CallableStatement stmt = con.prepareCall(SELECT_MOVIE_GENRES)) {
 
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -181,8 +176,8 @@ public class SqlRepository implements Repository {
         DataSource dataSource = DataSourceSingleton.getInstance();
 
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(SELECT_MOVIES);
-                ResultSet rs = stmt.executeQuery()) {
+             CallableStatement stmt = con.prepareCall(SELECT_MOVIES);
+             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 movies.add(new Movie(
@@ -207,7 +202,7 @@ public class SqlRepository implements Repository {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(CLEAR_MOVIES)) {
+             CallableStatement stmt = con.prepareCall(CLEAR_MOVIES)) {
 
             stmt.executeUpdate();
         }
@@ -218,7 +213,7 @@ public class SqlRepository implements Repository {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(UPDATE_MOVIE)) {
+             CallableStatement stmt = con.prepareCall(UPDATE_MOVIE)) {
 
             stmt.setInt(1, id);
             stmt.setString(2, movie.getTitle());
@@ -239,7 +234,7 @@ public class SqlRepository implements Repository {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(DELETE_MOVIE)) {
+             CallableStatement stmt = con.prepareCall(DELETE_MOVIE)) {
 
             stmt.setInt(1, id);
             stmt.executeUpdate();
@@ -251,7 +246,7 @@ public class SqlRepository implements Repository {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(CREATE_MOVIE)) {
+             CallableStatement stmt = con.prepareCall(CREATE_MOVIE)) {
 
             stmt.setString(1, movie.getTitle());
             stmt.setString(2, movie.getPublishedDate().format(Movie.DATE_FORMATTER));
@@ -271,7 +266,7 @@ public class SqlRepository implements Repository {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(SELECT_MOVIE)) {
+             CallableStatement stmt = con.prepareCall(SELECT_MOVIE)) {
 
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -301,7 +296,7 @@ public class SqlRepository implements Repository {
         DataSource dataSource = DataSourceSingleton.getInstance();
 
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(SELECT_ACTOR_MOVIES)) {
+             CallableStatement stmt = con.prepareCall(SELECT_ACTOR_MOVIES)) {
 
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -331,8 +326,8 @@ public class SqlRepository implements Repository {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(SELECT_ACTORS);
-                ResultSet rs = stmt.executeQuery()) {
+             CallableStatement stmt = con.prepareCall(SELECT_ACTORS);
+             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 actors.add(new Actor(
@@ -351,7 +346,7 @@ public class SqlRepository implements Repository {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(SELECT_ACTOR)) {
+             CallableStatement stmt = con.prepareCall(SELECT_ACTOR)) {
 
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -373,7 +368,7 @@ public class SqlRepository implements Repository {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(CREATE_ACTOR)) {
+             CallableStatement stmt = con.prepareCall(CREATE_ACTOR)) {
 
             stmt.setString(1, actor.getFirstName());
             stmt.setString(2, actor.getLastName());
@@ -387,7 +382,7 @@ public class SqlRepository implements Repository {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(UPDATE_ACTOR)) {
+             CallableStatement stmt = con.prepareCall(UPDATE_ACTOR)) {
 
             stmt.setInt(1, id);
             stmt.setString(2, actor.getFirstName());
@@ -402,7 +397,7 @@ public class SqlRepository implements Repository {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(DELETE_ACTOR)) {
+             CallableStatement stmt = con.prepareCall(DELETE_ACTOR)) {
 
             stmt.setInt(1, id);
             stmt.executeUpdate();
@@ -414,7 +409,7 @@ public class SqlRepository implements Repository {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(ADD_MOVIE_TO_ACTOR)) {
+             CallableStatement stmt = con.prepareCall(ADD_MOVIE_TO_ACTOR)) {
 
             stmt.setInt(1, idMovie);
             stmt.setInt(2, idActor);
@@ -427,7 +422,7 @@ public class SqlRepository implements Repository {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(REMOVE_MOVIE_FROM_ACTOR)) {
+             CallableStatement stmt = con.prepareCall(REMOVE_MOVIE_FROM_ACTOR)) {
 
             stmt.setInt(1, idMovie);
             stmt.setInt(2, idActor);
@@ -441,7 +436,7 @@ public class SqlRepository implements Repository {
         List<Movie> movies = new ArrayList<>();
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(SELECT_DIRECTOR_MOVIES)) {
+             CallableStatement stmt = con.prepareCall(SELECT_DIRECTOR_MOVIES)) {
 
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -471,8 +466,8 @@ public class SqlRepository implements Repository {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(SELECT_DIRECTORS);
-                ResultSet rs = stmt.executeQuery()) {
+             CallableStatement stmt = con.prepareCall(SELECT_DIRECTORS);
+             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 directors.add(new Director(
@@ -491,7 +486,7 @@ public class SqlRepository implements Repository {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(SELECT_DIRECTOR)) {
+             CallableStatement stmt = con.prepareCall(SELECT_DIRECTOR)) {
 
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -513,7 +508,7 @@ public class SqlRepository implements Repository {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(CREATE_DIRECTOR)) {
+             CallableStatement stmt = con.prepareCall(CREATE_DIRECTOR)) {
 
             stmt.setString(1, director.getFirstName());
             stmt.setString(2, director.getLastName());
@@ -527,7 +522,7 @@ public class SqlRepository implements Repository {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(UPDATE_DIRECTOR)) {
+             CallableStatement stmt = con.prepareCall(UPDATE_DIRECTOR)) {
 
             stmt.setInt(1, id);
             stmt.setString(2, director.getFirstName());
@@ -542,7 +537,7 @@ public class SqlRepository implements Repository {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(DELETE_DIRECTOR)) {
+             CallableStatement stmt = con.prepareCall(DELETE_DIRECTOR)) {
 
             stmt.setInt(1, id);
             stmt.executeUpdate();
@@ -554,7 +549,7 @@ public class SqlRepository implements Repository {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(ADD_MOVIE_TO_DIRECTOR)) {
+             CallableStatement stmt = con.prepareCall(ADD_MOVIE_TO_DIRECTOR)) {
 
             stmt.setInt(1, idMovie);
             stmt.setInt(2, idDirector);
@@ -567,7 +562,7 @@ public class SqlRepository implements Repository {
 
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(REMOVE_MOVIE_FROM_DIRECTOR)) {
+             CallableStatement stmt = con.prepareCall(REMOVE_MOVIE_FROM_DIRECTOR)) {
 
             stmt.setInt(1, idMovie);
             stmt.setInt(2, idDirector);
@@ -581,7 +576,7 @@ public class SqlRepository implements Repository {
         List<Actor> actors = new ArrayList<>();
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(SELECT_MOVIE_ACTORS)) {
+             CallableStatement stmt = con.prepareCall(SELECT_MOVIE_ACTORS)) {
 
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {

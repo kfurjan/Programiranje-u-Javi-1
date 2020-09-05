@@ -6,6 +6,8 @@ import hr.algebra.model.Movie;
 import hr.algebra.repository.Repository;
 import hr.algebra.repository.RepositoryFactory;
 import hr.algebra.utils.MessageUtils;
+
+import javax.swing.*;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
@@ -14,12 +16,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultListModel;
-import javax.swing.DropMode;
-import javax.swing.JComponent;
-import javax.swing.ListSelectionModel;
-import javax.swing.TransferHandler;
-import static javax.swing.TransferHandler.COPY;
 
 /**
  *

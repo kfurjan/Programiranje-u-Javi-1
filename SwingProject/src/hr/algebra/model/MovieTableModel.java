@@ -1,21 +1,19 @@
 package hr.algebra.model;
 
+import javax.swing.table.AbstractTableModel;
 import java.util.List;
 import java.util.Optional;
-import javax.swing.table.AbstractTableModel;
 
 /**
- *
  * @author Kevin Furjan
  */
 public class MovieTableModel extends AbstractTableModel {
 
-    List<Movie> movies;
-
     private static final String DELIMITER = "; ";
     private static final String[] COLUMN_NAMES
             = {"ID", "Title", "Published date", "Description", "Original name",
-                "Length", "Picture path", "Link", "Start date", "Genre"};
+            "Length", "Picture path", "Link", "Start date", "Genre"};
+    List<Movie> movies;
 
     public MovieTableModel(List<Movie> movies) {
         this.movies = movies;

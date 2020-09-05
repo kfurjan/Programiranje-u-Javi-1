@@ -1,10 +1,6 @@
 package hr.algebra.repository;
 
-import hr.algebra.model.Actor;
-import hr.algebra.model.ApplicationUser;
-import hr.algebra.model.Director;
-import hr.algebra.model.Genre;
-import hr.algebra.model.Movie;
+import hr.algebra.model.*;
 
 import java.util.List;
 import java.util.Optional;

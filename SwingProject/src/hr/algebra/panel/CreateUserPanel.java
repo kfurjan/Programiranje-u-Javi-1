@@ -4,13 +4,13 @@ import hr.algebra.frame.MainFrame;
 import hr.algebra.repository.Repository;
 import hr.algebra.repository.RepositoryFactory;
 import hr.algebra.utils.MessageUtils;
+
+import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
-import javax.swing.text.JTextComponent;
 
 /**
  *

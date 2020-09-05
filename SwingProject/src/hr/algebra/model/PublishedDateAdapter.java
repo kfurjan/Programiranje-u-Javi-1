@@ -1,10 +1,9 @@
 package hr.algebra.model;
 
-import java.time.LocalDateTime;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+import java.time.LocalDateTime;
 
 /**
- *
  * @author Kevin Furjan
  */
 public class PublishedDateAdapter extends XmlAdapter<String, LocalDateTime> {

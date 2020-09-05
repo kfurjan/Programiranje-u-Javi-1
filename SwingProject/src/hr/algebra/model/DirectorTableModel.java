@@ -1,19 +1,17 @@
 package hr.algebra.model;
 
+import javax.swing.table.AbstractTableModel;
 import java.util.List;
 import java.util.Optional;
-import javax.swing.table.AbstractTableModel;
 
 /**
- *
  * @author Kevin Furjan
  */
 public class DirectorTableModel extends AbstractTableModel {
 
-    List<Director> directors;
-
     private static final String DELIMITER = "; ";
     private static final String[] COLUMN_NAMES = {"ID", "Firstname", "Lastname", "Movies"};
+    List<Director> directors;
 
     public DirectorTableModel(List<Director> directors) {
         this.directors = directors;

@@ -6,12 +6,13 @@ import hr.algebra.repository.Repository;
 import hr.algebra.repository.RepositoryFactory;
 import hr.algebra.utils.FileUtils;
 import hr.algebra.utils.MessageUtils;
+
+import javax.swing.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultListModel;
 
 /**
  *
