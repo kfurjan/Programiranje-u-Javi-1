@@ -186,6 +186,7 @@ public class DragAndDropPanel extends javax.swing.JPanel {
     private void showMovieActors() {
 
         try {
+            actorsSet.clear();
             loadMovieActors();
             loadAllActors();
         } catch (Exception ex) {

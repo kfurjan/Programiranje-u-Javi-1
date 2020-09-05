@@ -23,6 +23,8 @@ public class CreateUserPanel extends javax.swing.JPanel {
     private List<JTextComponent> validationFields;
     private List<JLabel> errorLabels;
 
+    private static final String LOGIN_PANEL = "Login";
+
     private static final String USER_CREATED_TITLE = "User created";
     private static final String NEW_USER_CREATED = "New user has been created";
 
@@ -52,45 +54,15 @@ public class CreateUserPanel extends javax.swing.JPanel {
         lblUsername = new javax.swing.JLabel();
         lblPassword = new javax.swing.JLabel();
         txtUsername = new javax.swing.JTextField();
-        txtPassword = new javax.swing.JTextField();
+        txtPassword = new javax.swing.JPasswordField();
         btnCreateUser = new javax.swing.JButton();
         lblUsernameError = new javax.swing.JLabel();
         lblPasswordError = new javax.swing.JLabel();
-
-        java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
-        layout.columnWidths = new int[] {0, 80, 0, 80, 0, 80, 0, 80, 0, 80, 0};
-        layout.rowHeights = new int[] {0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0};
-        layout.columnWeights = new double[] {1.1};
-        layout.rowWeights = new double[] {1.0};
-        setLayout(layout);
+        jLabel1 = new javax.swing.JLabel();
 
         lblUsername.setText("Username:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        add(lblUsername, gridBagConstraints);
 
         lblPassword.setText("Password:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.ipady = 1;
-        gridBagConstraints.weightx = 0.2;
-        add(lblPassword, gridBagConstraints);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 5;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        add(txtUsername, gridBagConstraints);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 5;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 1;
-        gridBagConstraints.weightx = 0.2;
-        add(txtPassword, gridBagConstraints);
 
         btnCreateUser.setText("Create user");
         btnCreateUser.addActionListener(new java.awt.event.ActionListener() {
@@ -98,24 +70,65 @@ public class CreateUserPanel extends javax.swing.JPanel {
                 btnCreateUserActionPerformed(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 6;
-        gridBagConstraints.gridwidth = 5;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        add(btnCreateUser, gridBagConstraints);
 
         lblUsernameError.setForeground(new java.awt.Color(255, 0, 0));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 8;
-        gridBagConstraints.gridy = 0;
-        add(lblUsernameError, gridBagConstraints);
 
-        lblPasswordError.setForeground(new java.awt.Color(255, 0, 51));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 8;
-        gridBagConstraints.gridy = 2;
-        add(lblPasswordError, gridBagConstraints);
+        lblPasswordError.setForeground(new java.awt.Color(255, 0, 0));
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/placeholder/logo.png"))); // NOI18N
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(122, 122, 122)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(90, 90, 90)
+                        .addComponent(btnCreateUser, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblUsername)
+                                    .addComponent(lblPassword))
+                                .addGap(90, 90, 90)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(38, 38, 38)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblPasswordError)
+                            .addComponent(lblUsernameError))))
+                .addContainerGap(88, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(30, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addComponent(lblUsername))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblUsernameError)))
+                .addGap(28, 28, 28)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addComponent(lblPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblPasswordError)))
+                .addGap(31, 31, 31)
+                .addComponent(btnCreateUser)
+                .addGap(74, 74, 74))
+        );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCreateUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateUserActionPerformed
@@ -124,11 +137,13 @@ public class CreateUserPanel extends javax.swing.JPanel {
             if (formValid()) {
                 String username = txtUsername.getText().trim();
                 String password = txtPassword.getText().trim();
-                MainFrame topFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
-
                 repository.createNewUser(username, password);
-                MessageUtils.showInformationMessage(USER_CREATED_TITLE, NEW_USER_CREATED);
+
+                MainFrame topFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
                 topFrame.getTpContent().remove(this);
+                topFrame.getTpContent().add(LOGIN_PANEL, new LoginPanel());
+
+                MessageUtils.showInformationMessage(USER_CREATED_TITLE, NEW_USER_CREATED);
             }
         } catch (Exception ex) {
             Logger.getLogger(CreateUserPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -139,11 +154,12 @@ public class CreateUserPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCreateUser;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lblPassword;
     private javax.swing.JLabel lblPasswordError;
     private javax.swing.JLabel lblUsername;
     private javax.swing.JLabel lblUsernameError;
-    private javax.swing.JTextField txtPassword;
+    private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 
@@ -162,7 +178,7 @@ public class CreateUserPanel extends javax.swing.JPanel {
     private void initValidation() {
 
         errorLabels = Arrays.asList(lblPasswordError, lblUsernameError);
-        validationFields = Arrays.asList(txtUsername, txtPassword);
+        validationFields = Arrays.asList(txtPassword, txtUsername);
     }
 
     private void initRepository() throws Exception {
