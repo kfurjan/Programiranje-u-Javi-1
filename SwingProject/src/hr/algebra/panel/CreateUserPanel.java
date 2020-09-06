@@ -28,9 +28,10 @@ public class CreateUserPanel extends javax.swing.JPanel {
     private static final String USER_CREATED_TITLE = "User created";
     private static final String NEW_USER_CREATED = "New user has been created";
 
-    private static final String CANNOT_INITIATE_THE_FORM = "Cannot initiate the form";
     private static final String NEW_USER_ERROR = "Error while creating new user";
     private static final String UNRECOVERABLE_ERROR = "Unrecoverable error";
+    private static final String CANNOT_INITIATE_THE_FORM = "Cannot initiate the form";
+    private static final String THIS_USER_ALREADY_EXISTS = "This user already exists";
 
     /**
      * Creates new form LoginPanel
@@ -141,14 +142,18 @@ public class CreateUserPanel extends javax.swing.JPanel {
 
                 MainFrame topFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
                 topFrame.getTpContent().remove(this);
-                topFrame.getTpContent().add(LOGIN_PANEL, new LoginPanel());
+                topFrame.getTpContent().addTab(LOGIN_PANEL, new LoginPanel());
 
                 MessageUtils.showInformationMessage(USER_CREATED_TITLE, NEW_USER_CREATED);
             }
         } catch (Exception ex) {
             Logger.getLogger(CreateUserPanel.class.getName()).log(Level.SEVERE, null, ex);
-            MessageUtils.showErrorMessage(UNRECOVERABLE_ERROR, NEW_USER_ERROR);
-            System.exit(1);
+
+            MainFrame topFrame = (MainFrame) SwingUtilities.getWindowAncestor(this);
+            topFrame.getTpContent().remove(this);
+            topFrame.getTpContent().addTab(LOGIN_PANEL, new LoginPanel());
+
+            MessageUtils.showErrorMessage(NEW_USER_ERROR, THIS_USER_ALREADY_EXISTS);
         }
     }//GEN-LAST:event_btnCreateUserActionPerformed
 

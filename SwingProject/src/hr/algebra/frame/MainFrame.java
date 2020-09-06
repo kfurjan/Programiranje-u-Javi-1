@@ -9,9 +9,9 @@ import javax.swing.*;
  * @author Kevin Furjan
  */
 public class MainFrame extends javax.swing.JFrame {
-    
+
     private static final String LOGIN = "Login";
-    
+
     LoginPanel loginPanel = new LoginPanel();
 
     /**
@@ -94,6 +94,6 @@ public class MainFrame extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void initLoginPanel() {
-        tpContent.add(LOGIN, loginPanel);
+        tpContent.addTab(LOGIN, loginPanel);
     }
 }

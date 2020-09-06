@@ -181,15 +181,15 @@ public class LoginPanel extends javax.swing.JPanel {
                         case Administrator:
                             topFrame.setSize(800, 600);
                             topFrame.getTpContent().remove(this);
-                            topFrame.getTpContent().add(ADMIN_PANEL, new AdminPanel());
+                            topFrame.getTpContent().addTab(ADMIN_PANEL, new AdminPanel());
                             break;
                         case User:
                             topFrame.setSize(1200, 850);
                             topFrame.getTpContent().remove(this);
-                            topFrame.getTpContent().add(MOVIES_PANEL, new MoviePanel());
-                            topFrame.getTpContent().add(ACTORS_PANEL, new ActorPanel());
-                            topFrame.getTpContent().add(DIRECTORS_PANEL, new DirectorPanel());
-                            topFrame.getTpContent().add(DRAG_AND_DROP_PANEL, new DragAndDropPanel());
+                            topFrame.getTpContent().addTab(MOVIES_PANEL, new MoviePanel());
+                            topFrame.getTpContent().addTab(ACTORS_PANEL, new ActorPanel());
+                            topFrame.getTpContent().addTab(DIRECTORS_PANEL, new DirectorPanel());
+                            topFrame.getTpContent().addTab(DRAG_AND_DROP_PANEL, new DragAndDropPanel());
                             break;
                         default:
                             break;

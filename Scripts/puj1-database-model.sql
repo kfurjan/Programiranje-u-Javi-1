@@ -90,8 +90,8 @@ INSERT INTO ApplicationUserType (UserType) VALUES
 GO
 
 INSERT INTO ApplicationUser (Username, Password, ApplicationUserTypeID) VALUES
-	('Admin', 'admin', 1),
-	('User', 'user', 2)
+	('admin', 'admin', 1),
+	('user', 'user', 2)
 GO
 
 										/* PROCEDURES */
