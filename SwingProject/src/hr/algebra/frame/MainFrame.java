@@ -3,6 +3,8 @@ package hr.algebra.frame;
 import hr.algebra.panel.LoginPanel;
 
 import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
 /**
  *
@@ -10,9 +12,9 @@ import javax.swing.*;
  */
 public class MainFrame extends javax.swing.JFrame {
 
-    private static final String LOGIN = "Login";
-
-    LoginPanel loginPanel = new LoginPanel();
+    private static final int WIDTH = 600;
+    private static final int HEIGHT = 550;
+    private static final String LOGIN_PANEL = "Login";
 
     /**
      * Creates new form MainFrame
@@ -20,6 +22,7 @@ public class MainFrame extends javax.swing.JFrame {
     public MainFrame() {
         initComponents();
         initLoginPanel();
+        initMenuListener();
     }
 
     public JTabbedPane getTpContent() {
@@ -36,8 +39,15 @@ public class MainFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         tpContent = new javax.swing.JTabbedPane();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        menuLogOut = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        menuLogOut.setText("Log out");
+        jMenuBar1.add(menuLogOut);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -52,7 +62,7 @@ public class MainFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(tpContent, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
+                .addComponent(tpContent, javax.swing.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -90,10 +100,25 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenu menuLogOut;
     private javax.swing.JTabbedPane tpContent;
     // End of variables declaration//GEN-END:variables
 
     private void initLoginPanel() {
-        tpContent.addTab(LOGIN, loginPanel);
+        tpContent.addTab(LOGIN_PANEL, new LoginPanel());
+    }
+
+    private void initMenuListener() {
+        menuLogOut.addMenuListener(new MenuListener() {
+            public void menuSelected(MenuEvent e) {
+                setSize(WIDTH, HEIGHT);
+                tpContent.removeAll();
+                tpContent.addTab(LOGIN_PANEL, new LoginPanel());
+            }
+            
+            public void menuDeselected(MenuEvent e) { }
+            public void menuCanceled(MenuEvent e) { }
+        });
     }
 }
