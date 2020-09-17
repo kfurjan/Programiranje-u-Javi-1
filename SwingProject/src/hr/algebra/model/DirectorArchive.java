@@ -13,6 +13,8 @@ public class DirectorArchive {
     @XmlElementWrapper
     @XmlElement(name = "director")
     private List<Director> directors;
+    
+    public DirectorArchive() { }
 
     public DirectorArchive(List<Director> directors) {
         this.directors = directors;

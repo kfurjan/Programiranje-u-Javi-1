@@ -13,6 +13,8 @@ public class ActorArchive {
     @XmlElementWrapper
     @XmlElement(name = "actor")
     private List<Actor> actors;
+    
+    public ActorArchive() { }
 
     public ActorArchive(List<Actor> actors) {
         this.actors = actors;
